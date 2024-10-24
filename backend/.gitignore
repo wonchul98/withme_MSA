@@ -1,3 +1,6 @@
+### Spring Local Config ###
+**/application-local.yml
+
 HELP.md
 .gradle
 build/
