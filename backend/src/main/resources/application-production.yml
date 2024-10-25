@@ -5,8 +5,8 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${MYSQL_HOST}:${MYSQL_PORT}/jenkins?user=${MYSQL_USER}
-    password: ${MYSQL_PASSWORD}
+    url: jdbc:mysql://localhost:3306/jenkins?user=root
+    password: ENC(qbS1pBCd0aXYSjS9rp3NKE9TO+q5r+g7)
 
   jpa:
     hibernate:
