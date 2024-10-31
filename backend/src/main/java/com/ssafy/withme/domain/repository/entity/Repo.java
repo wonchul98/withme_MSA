@@ -17,7 +17,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @Getter
 @SQLDelete(sql = "UPDATE repository SET is_deleted = true WHERE id = ?")
 @SQLRestriction("is_deleted = false")
-public class Repository extends BaseTimeEntity {
+public class Repo extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,4 +33,7 @@ public class Repository extends BaseTimeEntity {
 
     @Column(nullable = false)
     private Boolean isVisible;
+
+    @Column(name = "is_deleted", columnDefinition = "tinyint(1) not null default 0")
+    private Boolean isDeleted;
 }
