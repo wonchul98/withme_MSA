@@ -28,11 +28,10 @@ function SidebarRoom() {
   );
 }
 
-// 에디터를 위한 별도의 컴포넌트
 function EditorRoom({ roomId }: { roomId: null | number }) {
   return (
     <RoomProvider
-      key={roomId} // key를 추가하여 roomId가 변경될 때 컴포넌트를 리마운트
+      key={roomId}
       id={`room-${roomId}`}
       initialStorage={{
         menuItems: [],
