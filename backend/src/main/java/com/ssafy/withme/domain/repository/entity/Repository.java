@@ -21,14 +21,14 @@ public class Repository extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "id", nullable = false)
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "id", nullable = false)
+    @JoinColumn(name = "workspace_id", nullable = false)
     private Workspace workspace;
 
     @Column(nullable = false)
