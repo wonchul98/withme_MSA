@@ -9,6 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@blocknote/core": "^0.18.0",
+    "@blocknote/mantine": "^0.18.1",
+    "@blocknote/react": "^0.18.1",
+    "@liveblocks/client": "^2.10.2",
+    "@liveblocks/react": "^2.10.2",
+    "@liveblocks/yjs": "^2.10.2",
     "next": "15.0.2",
     "react": "19.0.0-rc-02c0e824-20241028",
     "react-dom": "19.0.0-rc-02c0e824-20241028"
