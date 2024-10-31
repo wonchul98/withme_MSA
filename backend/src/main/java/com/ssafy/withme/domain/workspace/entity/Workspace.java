@@ -3,6 +3,7 @@ package com.ssafy.withme.domain.workspace.entity;
 import com.ssafy.withme.global.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
@@ -29,14 +30,33 @@ public class Workspace extends BaseTimeEntity {
     private String repoUrl;
 
     @Column(nullable = false, name = "is_created", columnDefinition = "boolean default false")
-    private Boolean isCreated;
+    private Boolean isCreated = false;
 
     @Column(columnDefinition = "TEXT", name = "readme_content")
-    private String readmeContent;
+    private String readmeContent = "";
 
     @Column(nullable = false, name = "is_private", columnDefinition = "boolean default true")
-    private Boolean isPrivate;
+    private Boolean isPrivate = true;
 
-    @Column(nullable = false, name = "is_deleted", columnDefinition = "tinyint(1) default 0")
-    private Boolean isDeleted;
+    @Column(nullable = false, name = "is_deleted", columnDefinition = "boolean default false")
+    private Boolean isDeleted = false;
+
+    @Builder
+    public Workspace(String name, String repoUrl, String thumbnail) {
+        this.name = name;
+        this.repoUrl = repoUrl;
+        this.thumbnail = thumbnail;
+    }
+
+    public void changeReadmeContent(String readmeContent) {
+        this.readmeContent = readmeContent;
+    }
+
+    public void changeIsPrivate(Boolean isPrivate) {
+        this.isPrivate = isPrivate;
+    }
+
+    public void changeIsCreated(Boolean isCreated) {
+        this.isCreated = isCreated;
+    }
 }

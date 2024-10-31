@@ -20,16 +20,16 @@ public class Member extends BaseTimeEntity {
     @Column(nullable = false)
     private String username;
 
-    @Column(length = 10, nullable = false)
+    @Column(nullable = false, length = 10)
     @Enumerated(EnumType.STRING)
     private Provider provider;
 
-    @Column(name = "is_deleted", columnDefinition = "tinyint(1) not null default 0")
-    private Boolean isDeleted;
+    @Column(name = "is_deleted", nullable = false, columnDefinition = "boolean default false")
+    private Boolean isDeleted = false;
 
     @Builder
-    public Member(Long id, String username) {
-        this.id = id;
+    public Member(String username, Provider provider) {
         this.username = username;
+        this.provider = provider;
     }
 }

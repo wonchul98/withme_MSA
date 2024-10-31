@@ -5,6 +5,7 @@ import com.ssafy.withme.domain.workspace.entity.Workspace;
 import com.ssafy.withme.global.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
@@ -31,9 +32,19 @@ public class Repo extends BaseTimeEntity {
     @JoinColumn(name = "workspace_id", nullable = false)
     private Workspace workspace;
 
-    @Column(nullable = false)
-    private Boolean isVisible;
+    @Column(name = "is_visible", nullable = false, columnDefinition = "boolean default false")
+    private Boolean isVisible = false;
 
-    @Column(name = "is_deleted", columnDefinition = "tinyint(1) not null default 0")
-    private Boolean isDeleted;
+    @Column(name = "is_deleted", nullable = false, columnDefinition = "boolean default false")
+    private Boolean isDeleted = false;
+
+    @Builder
+    public Repo(Member member, Workspace workspace) {
+        this.member = member;
+        this.workspace = workspace;
+    }
+
+    public void changeIsVisible(Boolean isVisible) {
+        this.isVisible = isVisible;
+    }
 }
