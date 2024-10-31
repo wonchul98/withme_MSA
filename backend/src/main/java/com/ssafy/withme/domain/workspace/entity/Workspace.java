@@ -34,6 +34,6 @@ public class Workspace extends BaseTimeEntity {
     @Column(columnDefinition = "TEXT", name = "readme_content")
     private String readmeContent;
 
-    @Column(nullable = false, name = "is_private", columnDefinition = "boolean default false")
+    @Column(nullable = false, name = "is_private", columnDefinition = "boolean default true")
     private Boolean isPrivate;
 }
