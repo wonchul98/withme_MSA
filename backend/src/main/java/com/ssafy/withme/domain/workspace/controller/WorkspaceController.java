@@ -1,6 +1,7 @@
 package com.ssafy.withme.domain.workspace.controller;
 
 import com.ssafy.withme.domain.workspace.dto.Response.WorkspaceInfoResponse;
+import com.ssafy.withme.domain.workspace.service.WorkspaceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -14,9 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/workspace")
 public class WorkspaceController {
 
+    private final WorkspaceService workspaceService;
+
     @GetMapping("")
     public Slice<WorkspaceInfoResponse> myWorkspace(Pageable pageable, Long cursor) {
-        return null;
+        return workspaceService.getMyWorkspaces(pageable, cursor);
     }
 
     @GetMapping("/search")
