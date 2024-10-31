@@ -8,7 +8,7 @@ import { BlockNoteView } from '@blocknote/mantine';
 import '@blocknote/mantine/style.css';
 import * as Y from 'yjs';
 import { LiveblocksYjsProvider } from '@liveblocks/yjs';
-import { ClientSideSuspense, useRoom } from '@liveblocks/react/suspense';
+import { useRoom } from '@liveblocks/react/suspense';
 
 type EditorProps = {
   doc: Y.Doc;
@@ -36,11 +36,7 @@ export function Editor() {
     return null;
   }
 
-  return (
-    <ClientSideSuspense fallback={<div>Loading...</div>}>
-      <BlockNote doc={doc} provider={provider} />
-    </ClientSideSuspense>
-  );
+  return <BlockNote doc={doc} provider={provider} />;
 }
 
 function BlockNote({ doc, provider }: EditorProps) {

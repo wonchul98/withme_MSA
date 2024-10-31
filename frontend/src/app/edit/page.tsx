@@ -4,7 +4,7 @@ import React from 'react';
 import { ActiveIdProvider, useActiveId } from './_contexts/ActiveIdContext';
 import { Editor } from './_components/Editor';
 import { LeftBar } from './_components/LeftBar';
-import { LiveblocksProvider, RoomProvider } from '@liveblocks/react/suspense';
+import { LiveblocksProvider, RoomProvider, ClientSideSuspense } from '@liveblocks/react/suspense';
 
 // 사이드바를 위한 별도의 컴포넌트
 function SidebarRoom() {
@@ -37,9 +37,11 @@ function EditorRoom({ roomId }: { roomId: null | number }) {
         menuItems: [],
       }}
     >
-      <main className="h-full w-full p-4">
-        <Editor />
-      </main>
+      <ClientSideSuspense fallback={<div>Loading...</div>}>
+        <main className="h-full w-full p-4">
+          <Editor />
+        </main>
+      </ClientSideSuspense>
     </RoomProvider>
   );
 }
@@ -53,7 +55,8 @@ function EditPageContent() {
         <SidebarRoom />
       </div>
       <div className="flex-1 ml-64">
-        <EditorRoom roomId={activeId} />
+        <EditorRoom roomId={activeId ? activeId : 1} />
+        <div>{activeId}</div>
       </div>
     </div>
   );
