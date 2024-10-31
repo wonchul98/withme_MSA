@@ -69,7 +69,12 @@ body {
     --width: 33.33%;
   }
 
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 868px) {
+    --card-count: 2;
+    --width: 50%;
+  }
+
+  @media screen and (max-width: 568px) {
     grid-template-columns: repeat(1, 100%);
     grid-gap: 16px;
   }
