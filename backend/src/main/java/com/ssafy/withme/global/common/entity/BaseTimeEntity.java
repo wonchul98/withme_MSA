@@ -20,6 +20,5 @@ public class BaseTimeEntity {
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column
     private LocalDateTime updatedAt;
 }
