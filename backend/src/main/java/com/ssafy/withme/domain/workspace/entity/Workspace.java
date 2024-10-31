@@ -36,4 +36,7 @@ public class Workspace extends BaseTimeEntity {
 
     @Column(nullable = false, name = "is_private", columnDefinition = "boolean default true")
     private Boolean isPrivate;
+
+    @Column(nullable = false, name = "is_deleted", columnDefinition = "tinyint(1) default 0")
+    private Boolean isDeleted;
 }
