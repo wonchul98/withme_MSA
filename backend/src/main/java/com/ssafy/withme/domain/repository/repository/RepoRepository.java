@@ -7,11 +7,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 public interface RepoRepository extends JpaRepository<Repo, Long> {
 
-    Slice<Repo> findByMember_IdAndIdLessThan(Long memberId, Long cursor, Pageable pageable);
+    Slice<Repo> findByMember_IdAndIsVisibleTrueAndUpdatedAtBefore(Long memberId, LocalDateTime cursor, Pageable pageable);
 
-    Slice<Repo> findByMember_IdAndUpdatedAtBefore(Long memberId, LocalDateTime cursor, Pageable pageable);
+    List<Repo> findByMember_IdAndIsVisibleFalse(Long memberId);
 }

@@ -5,8 +5,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface WorkspaceService {
 
-    Slice<WorkspaceInfoResponse> getMyWorkspaces(Pageable pageable, LocalDateTime cursor);
+    void makeVisible(String repositoryUrl);
+
+    Slice<WorkspaceInfoResponse> getMyVisibleWorkspaces(Pageable pageable, LocalDateTime cursor);
+
+    List<WorkspaceInfoResponse> getMyInvisibleWorkspaces();
 }

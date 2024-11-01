@@ -1,14 +1,13 @@
 package com.ssafy.withme.domain.workspace.service;
 
-import com.ssafy.withme.domain.repository.entity.Repo;
 import com.ssafy.withme.domain.repository.repository.RepoRepository;
 import com.ssafy.withme.domain.workspace.dto.Response.WorkspaceInfoResponse;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.security.SecurityUtil;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
 
 import java.time.LocalDateTime;
 
@@ -20,12 +19,27 @@ public class WorkspaceServiceImpl implements WorkspaceService{
     final private RepoRepository repoRepository;
 
     @Override
-    public Slice<WorkspaceInfoResponse> getMyWorkspaces(Pageable pageable, LocalDateTime cursor) {
-        //TODO : Security 구현 시 수정
-//        Long memberId = SecurityUtil.getCurrentMemberId();
-        Long memberId = 1L;
-        if(cursor == null) cursor = LocalDateTime.now();
-        Slice<Repo> repositories = repoRepository.findByMember_IdAndUpdatedAtBefore(memberId, cursor, pageable);
-        return repositories.map(repository -> WorkspaceInfoResponse.from(repository.getWorkspace()));
+    @Transactional
+    public void makeVisible(String repositoryUrl) {
+        //권한 확인
+
+        //
+    }
+
+    @Override
+    public Slice<WorkspaceInfoResponse> getMyVisibleWorkspaces(Pageable pageable, LocalDateTime cursor) {
+        Long memberId = 1L; // TODO: 실제 멤버 ID로 변경
+        if (cursor == null) cursor = LocalDateTime.now();
+
+        return repoRepository.findByMember_IdAndIsVisibleTrueAndUpdatedAtBefore(memberId, cursor, pageable)
+                .map(visibleRepository -> WorkspaceInfoResponse.from(visibleRepository.getWorkspace()));
+    }
+
+    @Override
+    public List<WorkspaceInfoResponse> getMyInvisibleWorkspaces() {
+        Long memberId = 1L; // TODO: 실제 멤버 ID로 변경
+        return repoRepository.findByMember_IdAndIsVisibleFalse(memberId).stream()
+                .map(repository -> WorkspaceInfoResponse.from(repository.getWorkspace()))
+                .toList();
     }
 }
