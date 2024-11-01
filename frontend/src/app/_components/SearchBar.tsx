@@ -1,6 +1,16 @@
 export default function SearchBar() {
   return (
-    <div className="flex items-center bg-white border border-gray-300 rounded-[30px] px-4 py-2 gap-2">
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        backgroundColor: 'white',
+        border: '1px solid #D1D5DB', // border-gray-300
+        borderRadius: '30px', // rounded-[30px]
+        padding: '8px 16px', // px-4 py-2
+        gap: '8px', // gap-2
+      }}
+    >
       <svg
         className="cursor-pointer"
         width="20"
@@ -16,7 +26,13 @@ export default function SearchBar() {
       </svg>
       <input
         type="text"
-        className="w-full bg-transparent border-none text-gray-800 focus:outline-none"
+        style={{
+          width: '100%', // w-full
+          backgroundColor: 'transparent',
+          border: 'none',
+          color: '#1F2937', // text-gray-800
+          outline: 'none',
+        }}
         placeholder="검색어를 입력하세요"
       />
     </div>

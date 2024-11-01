@@ -7,20 +7,10 @@ export default function Home() {
   return (
     <div className="responsive_mainResponsive">
       <main className="w-full ">
-        <header className="pt-[30px] pb-[30px]">
+        <header style={{ paddingTop: '30px', paddingBottom: '30px' }} className="pt-[30px] pb-[30px]">
           <PageHeader title={PAGE_HEADER.workspace} />
         </header>
         <div className="grid_mainGrid ">
-          <UserWorkSpace />
-          <UserWorkSpace />
-          <UserWorkSpace />
-          <UserWorkSpace />
-          <UserWorkSpace />
-          <UserWorkSpace />
-          <UserWorkSpace />
-          <UserWorkSpace />
-          <UserWorkSpace />
-          <UserWorkSpace />
           <UserWorkSpace />
         </div>
       </main>
