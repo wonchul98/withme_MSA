@@ -3,5 +3,14 @@ interface PageHeaderProps {
 }
 
 export default function PageHeader({ title }: PageHeaderProps) {
-  return <div className="text-[40px] font-black">{title}</div>;
+  return (
+    <div
+      style={{
+        fontSize: '40px', // text-[40px]
+        fontWeight: '900', // font-black
+      }}
+    >
+      {title}
+    </div>
+  );
 }

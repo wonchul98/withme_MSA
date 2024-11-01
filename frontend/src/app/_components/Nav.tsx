@@ -4,8 +4,17 @@ import SearchBar from './SearchBar';
 
 export default function Nav() {
   return (
-    <nav className="bg-[#020623] w-full p-[12px] flex flex-row items-center">
-      <div className="flex-1" style={{ flex: '1 1 0%' }}>
+    <nav
+      style={{
+        backgroundColor: '#020623', // bg-[#020623]
+        width: '100%',
+        padding: '12px', // p-[12px]
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+      }}
+    >
+      <div style={{ flex: '1 1 0%' }}>
         <Image
           className="workspace-image cursor-pointer"
           src="/Logo.png"
@@ -16,10 +25,12 @@ export default function Nav() {
           style={{ width: '200px', height: '100%' }}
         />
       </div>
-      <div className="flex-2 ml-[10px]" style={{ flex: '2 1 0%' }}>
+      <div style={{ flex: '2 1 0%', marginLeft: '10px' }}>
+        {' '}
+        {/* ml-[10px] */}
         <SearchBar />
       </div>
-      <div className="flex-1" style={{ flex: '1 1 0%' }}>
+      <div style={{ flex: '1 1 0%' }}>
         <LoginBtn />
       </div>
     </nav>
