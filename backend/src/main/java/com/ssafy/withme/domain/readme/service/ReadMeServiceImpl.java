@@ -1,6 +1,7 @@
 package com.ssafy.withme.domain.readme.service;
 
 import com.ssafy.withme.domain.readme.dto.request.SaveReadMeRequestDTO;
+import com.ssafy.withme.domain.readme.dto.response.GetReadMeResponseDTO;
 import com.ssafy.withme.domain.workspace.entity.Workspace;
 import com.ssafy.withme.domain.workspace.repository.WorkspaceRepository;
 import com.ssafy.withme.global.exception.BusinessException;
@@ -21,5 +22,13 @@ public class ReadMeServiceImpl implements ReadMeService {
         workspace.changeReadmeContent(readMeRequestDTO.readme_content());
         workspaceRepository.save(workspace);
         return "successfully saved readme";
+    }
+
+    @Override
+    public GetReadMeResponseDTO getReadme(Long workspace_id) {
+        Workspace workspace = workspaceRepository.findById(workspace_id)
+                .orElseThrow(()-> new BusinessException(ErrorCode.WORKSPACE_NOT_FOUND));
+
+        return new GetReadMeResponseDTO(workspace.getReadmeContent());
     }
 }

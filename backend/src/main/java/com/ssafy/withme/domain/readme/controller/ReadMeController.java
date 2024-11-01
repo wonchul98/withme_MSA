@@ -1,11 +1,10 @@
 package com.ssafy.withme.domain.readme.controller;
 
 import com.ssafy.withme.domain.readme.dto.request.SaveReadMeRequestDTO;
+import com.ssafy.withme.domain.readme.dto.response.GetReadMeResponseDTO;
 import com.ssafy.withme.domain.readme.service.ReadMeService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,5 +15,10 @@ public class ReadMeController {
     @PostMapping("")
     public String saveReadMe(SaveReadMeRequestDTO readMeRequestDTO) {
         return readMeService.saveReadme(readMeRequestDTO);
+    }
+
+    @GetMapping("/{workspace_id}")
+    public GetReadMeResponseDTO getReadMe(@PathVariable("workspace_id") Long workspaceId) {
+        return readMeService.getReadme(workspaceId);
     }
 }
