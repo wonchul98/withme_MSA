@@ -8,7 +8,6 @@ import org.springframework.lang.Nullable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-@Getter
 public record ApiResponse<T> (
 
         int status,
