@@ -1,4 +1,4 @@
-import { MenuItem } from './_types/navigation';
+import { MenuItem } from './_types/MenuItem';
 
 declare global {
   interface Liveblocks {
