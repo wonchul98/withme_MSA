@@ -3,28 +3,35 @@
 import { useState, useEffect } from 'react';
 import { useStorage, useMutation } from '@liveblocks/react/suspense';
 import { ClientSideSuspense } from '@liveblocks/react/suspense';
-import { MenuItem } from '../_types/navigation';
+import { MenuItem } from '../_types/MenuItem';
 import { EditIcon } from '../_icons/EditIcon';
 import { useActiveId } from '../_contexts/ActiveIdContext';
+import { useMenuItems } from '../_contexts/MenuItemsContext';
 
 function LeftBarContent() {
   const { activeId, setActiveId } = useActiveId();
+  const { menuItems, setMenuItems } = useMenuItems();
   const [draggedItem, setDraggedItem] = useState<MenuItem | null>(null);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editValue, setEditValue] = useState<string>('');
 
-  const items = useStorage((root) => root.menuItems);
+  const storageMenuItems = useStorage((root) => root.menuItems);
 
   useEffect(() => {
-    if (items && items.length > 0 && activeId === null) {
-      setActiveId(items[0].id);
+    setMenuItems(storageMenuItems);
+  }, [storageMenuItems, setMenuItems]);
+
+  useEffect(() => {
+    if (menuItems && menuItems.length > 0 && activeId === null) {
+      setActiveId(menuItems[0].id);
     }
-  }, [items, activeId, setActiveId]);
+  }, [menuItems, activeId, setActiveId]);
 
   const updateItemLabel = useMutation(({ storage }, { id, newLabel }: { id: number; newLabel: string }) => {
     const menuItems = storage.get('menuItems');
-    const updatedItems = menuItems.map((item: MenuItem) => (item.id === id ? { ...item, label: newLabel } : item));
-    storage.set('menuItems', updatedItems);
+    const updatedMenuItems = menuItems.map((item: MenuItem) => (item.id === id ? { ...item, label: newLabel } : item));
+    storage.set('menuItems', updatedMenuItems);
+    setMenuItems(updatedMenuItems);
   }, []);
 
   const handleEditClick = (e: React.MouseEvent, item: MenuItem) => {
@@ -66,16 +73,17 @@ function LeftBarContent() {
         const [removed] = updatedItems.splice(draggedIndex, 1);
         updatedItems.splice(targetIndex, 0, removed);
         storage.set('menuItems', updatedItems);
+        setMenuItems(updatedItems);
       }
     },
     [],
   );
 
-  if (!items) return null;
+  if (!menuItems) return null;
 
   return (
     <div className="h-full p-4 space-y-2">
-      {items.map((item: MenuItem) => (
+      {menuItems.map((item: MenuItem) => (
         <div
           key={item.id}
           draggable={editingId !== item.id}
