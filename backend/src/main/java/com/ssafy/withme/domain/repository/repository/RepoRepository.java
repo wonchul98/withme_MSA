@@ -15,4 +15,6 @@ public interface RepoRepository extends JpaRepository<Repo, Long> {
     Slice<Repo> findByMember_IdAndIsVisibleTrueAndUpdatedAtBefore(Long memberId, LocalDateTime cursor, Pageable pageable);
 
     List<Repo> findByMember_IdAndIsVisibleFalse(Long memberId);
+
+    Repo findByMember_IdAndWorkspace_RepoUrl(Long memberId, String repoUrl);
 }

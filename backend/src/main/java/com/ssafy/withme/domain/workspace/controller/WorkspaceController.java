@@ -1,5 +1,6 @@
 package com.ssafy.withme.domain.workspace.controller;
 
+import com.ssafy.withme.domain.workspace.dto.Response.IntegratedWorkspaceResponse;
 import com.ssafy.withme.domain.workspace.dto.Response.WorkspaceInfoResponse;
 import com.ssafy.withme.domain.workspace.service.WorkspaceService;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.ssafy.withme.global.consts.StaticConst.PAGEABLE_DEFAULT_SIZE;
+
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/workspace")
@@ -20,7 +24,7 @@ public class WorkspaceController {
     private final WorkspaceService workspaceService;
 
     @GetMapping("/visible")
-    public Slice<WorkspaceInfoResponse> myVisibleWorkspace(@PageableDefault(size = 10, sort = "updatedAt",
+    public Slice<WorkspaceInfoResponse> myVisibleWorkspace(@PageableDefault(size = PAGEABLE_DEFAULT_SIZE, sort = "updatedAt",
             direction = Sort.Direction.DESC) Pageable pageable, @RequestParam(required = false) LocalDateTime cursor) {
         return workspaceService.getMyVisibleWorkspaces(pageable, cursor);
     }
@@ -41,7 +45,7 @@ public class WorkspaceController {
     }
 
     @PostMapping("")
-    public void visible(@RequestParam String repository_url) {
-        workspaceService.makeVisible(repository_url);
+    public IntegratedWorkspaceResponse visible(@RequestParam String repository_url) {
+        return workspaceService.makeVisible(repository_url);
     }
 }

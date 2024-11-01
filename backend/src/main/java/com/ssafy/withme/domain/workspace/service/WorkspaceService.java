@@ -1,5 +1,6 @@
 package com.ssafy.withme.domain.workspace.service;
 
+import com.ssafy.withme.domain.workspace.dto.Response.IntegratedWorkspaceResponse;
 import com.ssafy.withme.domain.workspace.dto.Response.WorkspaceInfoResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -9,7 +10,7 @@ import java.util.List;
 
 public interface WorkspaceService {
 
-    void makeVisible(String repositoryUrl);
+    IntegratedWorkspaceResponse makeVisible(String repositoryUrl);
 
     Slice<WorkspaceInfoResponse> getMyVisibleWorkspaces(Pageable pageable, LocalDateTime cursor);
 
