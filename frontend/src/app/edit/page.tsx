@@ -1,24 +1,32 @@
 'use client';
 
-import { useRef } from 'react';
 import { ActiveIdProvider, useActiveId } from './_contexts/ActiveIdContext';
 import { MenuItemsProvider, useMenuItems } from './_contexts/MenuItemsContext';
 import { Editor } from './_components/Editor';
 import { LeftBar } from './_components/LeftBar';
 import { LiveblocksProvider, RoomProvider, ClientSideSuspense } from '@liveblocks/react/suspense';
+import { v4 as uuidv4 } from 'uuid';
+
+const INITIAL_MENU_ITEMS = [
+  { id: uuidv4(), label: 'Dashboard' },
+  { id: uuidv4(), label: 'Projects' },
+  { id: uuidv4(), label: 'Tasks' },
+  { id: uuidv4(), label: 'Messages' },
+  { id: uuidv4(), label: 'Settings' },
+  { id: uuidv4(), label: 'Dashboard' },
+  { id: uuidv4(), label: 'Projects' },
+  { id: uuidv4(), label: 'Tasks' },
+  { id: uuidv4(), label: 'Messages' },
+  { id: uuidv4(), label: 'Settings' },
+];
 
 function LeftSidebar() {
   return (
     <RoomProvider
-      id="sidebar-room"
+      id="sidebar-room-1"
       initialStorage={{
-        menuItems: [
-          { id: 1, label: 'Dashboard' },
-          { id: 2, label: 'Projects' },
-          { id: 3, label: 'Tasks' },
-          { id: 4, label: 'Messages' },
-          { id: 5, label: 'Settings' },
-        ],
+        initialMenuItems: INITIAL_MENU_ITEMS,
+        menuItems: INITIAL_MENU_ITEMS,
       }}
     >
       <div className="bg-gray-900">
@@ -28,33 +36,35 @@ function LeftSidebar() {
   );
 }
 function LeftMain() {
-  const { menuItems } = useMenuItems();
+  const { initialItems } = useMenuItems();
 
-  const editorIdsRef = useRef<Set<number> | null>(null);
-
-  if (!editorIdsRef.current && menuItems) {
-    editorIdsRef.current = new Set(menuItems.map((item) => item.id));
+  // initialItems가 없거나 빈 배열이면 로딩 상태 표시
+  if (!initialItems || initialItems.length === 0) {
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        <div className="text-gray-400">Loading...</div>
+      </div>
+    );
   }
-
-  if (!menuItems || !editorIdsRef.current) return null;
 
   return (
     <ClientSideSuspense fallback={<div>Loading...</div>}>
       <div className="relative h-full w-full">
-        {Array.from(editorIdsRef.current).map((id) => (
-          <RoomWithEditor key={`room-${id}`} id={id} />
+        {initialItems.map((item) => (
+          <RoomWithEditor key={`room-${item.id}`} id={item.id} />
         ))}
       </div>
     </ClientSideSuspense>
   );
 }
 
-function RoomWithEditor({ id }: { id: number }) {
+function RoomWithEditor({ id }: { id: string }) {
   const { activeId } = useActiveId();
   return (
     <RoomProvider
       id={`room-${id}`}
       initialStorage={{
+        initialMenuItems: [],
         menuItems: [],
       }}
     >

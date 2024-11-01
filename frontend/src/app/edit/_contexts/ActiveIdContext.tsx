@@ -3,14 +3,14 @@
 import { createContext, useContext, useState } from 'react';
 
 type ActiveIdContextType = {
-  activeId: number | null;
-  setActiveId: (id: number) => void;
+  activeId: string | null;
+  setActiveId: (id: string) => void;
 };
 
 const ActiveIdContext = createContext<ActiveIdContextType | undefined>(undefined);
 
 export function ActiveIdProvider({ children }: { children: React.ReactNode }) {
-  const [activeId, setActiveId] = useState<number | null>(null);
+  const [activeId, setActiveId] = useState<string | null>(null);
 
   return <ActiveIdContext.Provider value={{ activeId, setActiveId }}>{children}</ActiveIdContext.Provider>;
 }
