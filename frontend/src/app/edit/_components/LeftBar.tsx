@@ -5,21 +5,25 @@ import { useStorage, useMutation } from '@liveblocks/react/suspense';
 import { ClientSideSuspense } from '@liveblocks/react/suspense';
 import { MenuItem } from '../_types/MenuItem';
 import { EditIcon } from '../_icons/EditIcon';
+import { DeleteIcon } from '../_icons/DeleteIcon';
 import { useActiveId } from '../_contexts/ActiveIdContext';
 import { useMenuItems } from '../_contexts/MenuItemsContext';
 
 function LeftBarContent() {
   const { activeId, setActiveId } = useActiveId();
-  const { menuItems, setMenuItems } = useMenuItems();
+  const { initialItems, setInitialItems } = useMenuItems();
+  const [menuItems, setMenuItems] = useState<MenuItem[] | null>(null);
   const [draggedItem, setDraggedItem] = useState<MenuItem | null>(null);
-  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState<string>('');
 
   const storageMenuItems = useStorage((root) => root.menuItems);
+  const storageInitialMenuItems = useStorage((root) => root.initialMenuItems);
 
   useEffect(() => {
     setMenuItems(storageMenuItems);
-  }, [storageMenuItems, setMenuItems]);
+    setInitialItems(storageInitialMenuItems);
+  }, [storageMenuItems, setMenuItems, storageInitialMenuItems]);
 
   useEffect(() => {
     if (menuItems && menuItems.length > 0 && activeId === null) {
@@ -27,12 +31,72 @@ function LeftBarContent() {
     }
   }, [menuItems, activeId, setActiveId]);
 
-  const updateItemLabel = useMutation(({ storage }, { id, newLabel }: { id: number; newLabel: string }) => {
+  const addNewTab = useMutation(
+    ({ storage }) => {
+      if (!menuItems || !initialItems) return;
+
+      // 현재 사용 중인 id들을 Set으로 만들어 빠른 검색이 가능하게 함
+      const usedIds = new Set(menuItems.map((item) => item.id));
+
+      // initialItems에서 아직 사용되지 않은 첫 번째 id를 찾음
+      const availableId = initialItems.find((item) => !usedIds.has(item.id))?.id;
+
+      if (!availableId) return;
+
+      const newTab: MenuItem = {
+        id: availableId,
+        label: '',
+      };
+
+      const updatedMenuItems = [...menuItems, newTab];
+      storage.set('menuItems', updatedMenuItems);
+      setMenuItems(updatedMenuItems);
+      setActiveId(newTab.id);
+      setEditingId(newTab.id);
+      setEditValue('');
+    },
+    [menuItems, initialItems],
+  );
+
+  const updateItemLabel = useMutation(({ storage }, { id, newLabel }: { id: string; newLabel: string }) => {
     const menuItems = storage.get('menuItems');
     const updatedMenuItems = menuItems.map((item: MenuItem) => (item.id === id ? { ...item, label: newLabel } : item));
     storage.set('menuItems', updatedMenuItems);
     setMenuItems(updatedMenuItems);
   }, []);
+
+  const deleteItem = useMutation(
+    ({ storage }, id: string) => {
+      const menuItems = storage.get('menuItems');
+
+      if (menuItems.length <= 1) {
+        return;
+      }
+
+      const updatedMenuItems = menuItems.filter((item: MenuItem) => item.id !== id);
+      storage.set('menuItems', updatedMenuItems);
+      setMenuItems(updatedMenuItems);
+
+      if (activeId === id) {
+        const nextItem = updatedMenuItems[0];
+        if (nextItem) {
+          setActiveId(nextItem.id);
+        }
+      }
+    },
+    [activeId],
+  );
+
+  const handleDeleteClick = (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    if (menuItems && menuItems.length <= 1) {
+      alert('마지막 탭은 삭제할 수 없습니다.');
+      return;
+    }
+    if (window.confirm('정말 이 탭을 삭제하시겠습니까?')) {
+      deleteItem(id);
+    }
+  };
 
   const handleEditClick = (e: React.MouseEvent, item: MenuItem) => {
     e.stopPropagation();
@@ -40,7 +104,7 @@ function LeftBarContent() {
     setEditValue(item.label);
   };
 
-  const handleEditSubmit = (id: number) => {
+  const handleEditSubmit = (id: string) => {
     if (editValue.trim()) {
       updateItemLabel({ id, newLabel: editValue.trim() });
     }
@@ -129,16 +193,35 @@ function LeftBarContent() {
           ) : (
             <>
               <span>{item.label}</span>
-              <button
-                onClick={(e) => handleEditClick(e, item)}
-                className="opacity-0 group-hover:opacity-100 transition-opacity ml-2"
-              >
-                <EditIcon />
-              </button>
+              <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity gap-2">
+                <button onClick={(e) => handleEditClick(e, item)} className="hover:text-green-500">
+                  <EditIcon />
+                </button>
+                <button onClick={(e) => handleDeleteClick(e, item.id)} className="hover:text-red-500">
+                  <DeleteIcon />
+                </button>
+              </div>
             </>
           )}
         </div>
       ))}
+
+      {menuItems.length <= 9 && (
+        <button
+          onClick={() => addNewTab()}
+          className="w-full px-4 py-3 rounded-lg
+            transition-all duration-200
+            text-sm font-medium
+            border border-dashed border-gray-600
+            text-gray-300 hover:text-white
+            hover:bg-white hover:bg-opacity-5
+            hover:border-gray-400
+            flex items-center justify-center gap-2"
+        >
+          <span className="text-lg">+</span>
+          <span>새 탭 추가</span>
+        </button>
+      )}
     </div>
   );
 }
