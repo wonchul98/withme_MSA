@@ -5,6 +5,15 @@ declare global {
     Storage: {
       menuItems: MenuItem[];
     };
+    UserMeta: {
+      id: string;
+      info: {
+        // Example properties, for useSelf, useUser, useOthers, etc.
+        name: string;
+        color: [string, string];
+        avatar?: string;
+      };
+    };
   }
 }
 
