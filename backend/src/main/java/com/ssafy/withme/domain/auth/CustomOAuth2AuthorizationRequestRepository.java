@@ -1,4 +1,4 @@
-package com.ssafy.withme.global.auth;
+package com.ssafy.withme.domain.auth;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -9,7 +9,7 @@ import org.springframework.util.Assert;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class InMemoryOAuth2AuthorizationRequestRepository implements AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
+public final class CustomOAuth2AuthorizationRequestRepository implements AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
 
     // 30분 내에 로그인을 완료하지 않으면 요청 삭제
     private final Map<String, OAuth2AuthorizationRequest> authorizationRequests = new HashMap<>();
