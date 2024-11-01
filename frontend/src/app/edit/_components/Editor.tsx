@@ -12,13 +12,13 @@ import { useRoom } from '@liveblocks/react/suspense';
 
 type EditorProps = {
   doc: Y.Doc;
-  provider: any;
+  provider: LiveblocksYjsProvider;
 };
 
 export function Editor() {
   const room = useRoom();
   const [doc, setDoc] = useState<Y.Doc>();
-  const [provider, setProvider] = useState<any>();
+  const [provider, setProvider] = useState<LiveblocksYjsProvider>();
 
   useEffect(() => {
     const yDoc = new Y.Doc();
