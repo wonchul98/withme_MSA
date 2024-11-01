@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 
 @Getter
 public record ApiResponse<T> (
+
         int status,
         @Nullable String message,
         String code,
