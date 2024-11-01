@@ -5,9 +5,11 @@ import { useActiveId } from './_contexts/ActiveIdContext';
 import { RoomProvider, ClientSideSuspense } from '@liveblocks/react/suspense';
 import { Editor } from './_components/Editor';
 import { LeftBar } from './_components/LeftBar';
-import LiveAvatars from './_components/LiveAvatars';
+import Nav from './_components/Nav';
 
 function SidebarRoom() {
+  const { activeId } = useActiveId();
+
   return (
     <RoomProvider
       id="sidebar-room"
@@ -21,8 +23,18 @@ function SidebarRoom() {
         ],
       }}
     >
-      <div className="bg-gray-900">
-        <LeftBar />
+      <div className="flex flex-col min-h-screen">
+        <header className="w-full">
+          <Nav />
+        </header>
+        <div className="flex flex-1">
+          <div className="bg-gray-900">
+            <LeftBar />
+          </div>
+          <div className="flex-1 p-4">
+            <EditorRoom roomId={activeId} />
+          </div>
+        </div>
       </div>
     </RoomProvider>
   );
@@ -38,8 +50,7 @@ function EditorRoom({ roomId }: { roomId: null | number }) {
       }}
     >
       <ClientSideSuspense fallback={<div>Loading...</div>}>
-        <LiveAvatars />
-        <main className="h-full w-full p-4">
+        <main>
           <Editor />
         </main>
       </ClientSideSuspense>
@@ -48,17 +59,9 @@ function EditorRoom({ roomId }: { roomId: null | number }) {
 }
 
 export default function EditPageContent() {
-  const { activeId } = useActiveId();
-
   return (
-    <div className="flex min-h-screen">
-      <div className="fixed h-full">
-        <SidebarRoom />
-      </div>
-      <div className="flex-1 ml-64">
-        <EditorRoom roomId={activeId ? activeId : 1} />
-        <div>{activeId}</div>
-      </div>
+    <div>
+      <SidebarRoom />
     </div>
   );
 }
