@@ -1,11 +1,18 @@
 server:
   port: 4040
+  error:
+    whitelabel:
+      enabled: false
 
 spring:
   application:
     name: withme
   profiles:
     default: production
+
+  mvc:
+    servlet:
+      path: /api
 
   jpa:
     properties:
