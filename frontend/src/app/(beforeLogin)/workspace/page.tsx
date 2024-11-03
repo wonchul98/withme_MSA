@@ -1,7 +1,7 @@
 import UserWorkSpace from './_component/UserWorkSpace';
 import '@/app/globals.css';
-import PageHeader from '../_components/PageHeader';
-import { PAGE_HEADER } from '../_util/constants';
+import PageHeader from '../../_components/PageHeader';
+import { PAGE_HEADER } from '../../_util/constants';
 import RepoBtn from './_component/RepoBtn';
 import SyncBtn from './_component/SyncBtn';
 export default function Home() {

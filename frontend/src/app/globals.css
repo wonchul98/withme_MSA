@@ -159,3 +159,22 @@ body {
   height: 8px; /* 체크 표시 크기 */
   background-color: #000; /* 체크 표시 색상 */
 }
+
+.container-login {
+  background-color: white; /* bg-white */
+  width: 100%; /* w-full */
+  max-width: 32rem; /* max-w-lg (32rem = 512px) */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* shadow-lg */
+  text-align: center; /* text-center */
+  display: flex; /* flex */
+  border-radius: 0.5rem; /* rounded-lg */
+  overflow: hidden; /* overflow-hidden */
+  flex-direction: column; /* flex-col */
+}
+
+@media (min-width: 768px) {
+  /* md:flex-row */
+  .container-login {
+    flex-direction: row; /* flex-row */
+  }
+}
