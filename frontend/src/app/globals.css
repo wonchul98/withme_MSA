@@ -178,3 +178,12 @@ body {
     flex-direction: row; /* flex-row */
   }
 }
+
+.container-wrapper {
+  height: 100vh;
+  background-color: #f7f9fa;
+}
+
+.container-block {
+  height: 67px;
+}

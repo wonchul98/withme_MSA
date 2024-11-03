@@ -2,14 +2,11 @@ import { ReactNode } from 'react';
 type Props = { children: ReactNode; modal: ReactNode };
 export default function Layout({ children }: Props) {
   return (
-    <div className="workspace-wrapper">
+    <div className="">
       <style>
         {`
 /* [project]/src/app/geistsans_9fc57718.module.css [app-client] (css) */
-.workspace-wrapper{
-          background-color:#F7F9FA;
-          height:100vh;
-}
+
 @font-face {
   font-family: geistSans;
   src: url("../media/GeistVF-s.p.7fe29570.woff") format("woff");
