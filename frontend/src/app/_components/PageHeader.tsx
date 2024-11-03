@@ -9,6 +9,7 @@ export default function PageHeader({ title }: PageHeaderProps) {
         fontSize: '40px', // text-[40px]
         fontWeight: '900', // font-black
       }}
+      className="w-full"
     >
       {title}
     </div>

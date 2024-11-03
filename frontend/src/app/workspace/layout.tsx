@@ -3,10 +3,14 @@ import Nav from '../_components/Nav';
 type Props = { children: ReactNode };
 export default function Layout({ children }: Props) {
   return (
-    <div>
+    <div className="workspace-wrapper">
       <style>
         {`
 /* [project]/src/app/geistsans_9fc57718.module.css [app-client] (css) */
+.workspace-wrapper{
+          background-color:#F7F9FA;
+          height:100vh;
+}
 @font-face {
   font-family: geistSans;
   src: url("../media/GeistVF-s.p.7fe29570.woff") format("woff");
@@ -244,6 +248,7 @@ html, :host {
 body {
   margin: 0;
   line-height: inherit;
+
 }
 
 hr {
@@ -811,6 +816,9 @@ body {
   color: black;
 }
 
+.justify-between {
+  justify-content: space-between;
+}
 
 /*# sourceMappingURL=src_app_c7d265._.css.map*/
 
