@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/workspace/readme")
+@RequestMapping("/api/readme")
 public class ReadMeController {
     private final ReadMeService readMeService;
 
