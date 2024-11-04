@@ -23,7 +23,7 @@ const INITIAL_MENU_ITEMS = [
 function LeftSidebar() {
   return (
     <RoomProvider
-      id="sidebar-room-1"
+      id="sidebar-room-2"
       initialStorage={{
         initialMenuItems: INITIAL_MENU_ITEMS,
         menuItems: INITIAL_MENU_ITEMS,
@@ -85,7 +85,7 @@ export default function EditPage() {
   return (
     <ActiveIdProvider>
       <MenuItemsProvider>
-        <LiveblocksProvider publicApiKey="pk_dev_NrnSHcf8kdqt92bL0XiFaOWgfuIDEx7fzLUimbyv02xZ8vM_NSxIdwQ8KHPK_aNd">
+        <LiveblocksProvider authEndpoint="/api/liveblocks-auth">
           <div className="flex min-h-screen">
             <div className="fixed h-full">
               <LeftSidebar />
