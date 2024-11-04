@@ -230,8 +230,8 @@ export function LeftBar() {
   return (
     <ClientSideSuspense fallback={<div>Loading...</div>}>
       {() => (
-        <div className="flex min-h-screen">
-          <div className="fixed left-0 top-0 h-screen bg-gray-900 w-64 border-r border-gray-800">
+        <div className="flex">
+          <div className="bg-gray-900 w-64 border-r border-gray-800">
             <LeftBarContent />
           </div>
         </div>
