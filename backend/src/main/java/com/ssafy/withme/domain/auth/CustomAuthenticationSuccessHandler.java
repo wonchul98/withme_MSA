@@ -23,7 +23,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         CustomOAuth2User principal = (CustomOAuth2User) authentication.getPrincipal();
         TokenAndInfoResponse tokenResponse = new TokenAndInfoResponse();
-        tokenResponse.setAccessToken(jwtUtils.issueToken(principal.getAccessToken()));
+        tokenResponse.setAccessToken(jwtUtils.issueToken(principal.getAccessToken(), principal.getId()));
         tokenResponse.setImageUrl((String) principal.getAttributes().get("avatar_url"));
         tokenResponse.setUserName((String) principal.getAttributes().get("login"));
 

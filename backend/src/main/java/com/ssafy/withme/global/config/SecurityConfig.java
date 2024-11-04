@@ -40,6 +40,7 @@ import java.time.Duration;
 public class SecurityConfig {
 
     private final CustomAuthenticationSuccessHandler successHandler;
+    private final CustomOAuth2UserService customUserService;
 
     @Bean
     @Order(1)
@@ -54,7 +55,7 @@ public class SecurityConfig {
                         .redirectionEndpoint(redirection -> redirection
                                 .baseUri("/login/oauth2/code/*"))
                         .userInfoEndpoint(userInfo -> userInfo
-                            .userService(customUserService()))
+                            .userService(customUserService))
                         .successHandler(successHandler)
                 )
 
@@ -108,10 +109,5 @@ public class SecurityConfig {
     @Bean
     protected AuthorizationRequestRepository<OAuth2AuthorizationRequest> authorizationRequestRepository() {
         return new CustomOAuth2AuthorizationRequestRepository();
-    }
-
-    @Bean
-    protected OAuth2UserService<OAuth2UserRequest, OAuth2User> customUserService() {
-        return new CustomOAuth2UserService();
     }
 }

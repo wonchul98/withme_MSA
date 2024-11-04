@@ -18,7 +18,7 @@ import static com.ssafy.withme.global.consts.StaticConst.PAGEABLE_DEFAULT_SIZE;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/workspace")
+@RequestMapping("/api/workspace")
 public class WorkspaceController {
 
     private final WorkspaceService workspaceService;
