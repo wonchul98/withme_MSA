@@ -26,7 +26,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
-        Provider provider = registrationId.equals(String.valueOf(Provider.GITHUB)) ? Provider.GITHUB : Provider.GITLAB;
+        Provider provider = registrationId.equals(String.valueOf(Provider.GITHUB).toLowerCase()) ? Provider.GITHUB : Provider.GITLAB;
         String tokenValue = userRequest.getAccessToken().getTokenValue();
 
         OAuth2User oAuth2User = super.loadUser(userRequest);
@@ -34,12 +34,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         //github 우선
         String userName = oAuth2User.getAttribute("login");
 
-        //TODO : 유저를 찾고 없으면 DB에 추가한다
         Long userId = memberRepository.findByUsernameAndProvider(userName, provider)
                 .orElse(memberRepository.save(new Member(userName, provider)))
                 .getId();
 
-        //Github access token을 저장해야 하는지 확인한다
         return new CustomOAuth2User(oAuth2User, tokenValue, userId);
     }
 }
