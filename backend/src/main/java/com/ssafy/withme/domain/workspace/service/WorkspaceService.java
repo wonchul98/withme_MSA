@@ -15,4 +15,6 @@ public interface WorkspaceService {
     Slice<WorkspaceInfoResponse> getMyVisibleWorkspaces(Pageable pageable, LocalDateTime cursor);
 
     List<WorkspaceInfoResponse> getMyInvisibleWorkspaces();
+
+    IntegratedWorkspaceResponse makeInvisible(String repositoryUrl);
 }

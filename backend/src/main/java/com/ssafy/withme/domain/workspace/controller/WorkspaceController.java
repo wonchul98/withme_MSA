@@ -45,7 +45,12 @@ public class WorkspaceController {
     }
 
     @PostMapping("")
-    public IntegratedWorkspaceResponse visible(@RequestParam String repository_url) {
+    public IntegratedWorkspaceResponse makeVisible(@RequestParam String repository_url) {
         return workspaceService.makeVisible(repository_url);
+    }
+
+    @DeleteMapping("")
+    public IntegratedWorkspaceResponse deleteWorkspace(@RequestParam String repository_url) {
+        return workspaceService.makeInvisible(repository_url);
     }
 }
