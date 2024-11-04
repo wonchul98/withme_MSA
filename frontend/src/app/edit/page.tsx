@@ -7,6 +7,8 @@ import { LeftBar } from './_components/LeftBar';
 import { LiveblocksProvider, RoomProvider, ClientSideSuspense } from '@liveblocks/react/suspense';
 import { v4 as uuidv4 } from 'uuid';
 import Nav from './_components/Nav';
+import { MarkdownView } from './_components/MarkdownView';
+import { MarkdownProvider } from './_contexts/MarkdownContext';
 
 const INITIAL_MENU_ITEMS = [
   { id: uuidv4(), label: 'Dashboard' },
@@ -51,7 +53,7 @@ function LeftMain() {
   );
 }
 function RightMain() {
-  return <>test</>;
+  return <MarkdownView />;
 }
 
 function RoomWithEditor({ id }: { id: string }) {
@@ -81,33 +83,35 @@ export default function EditPage() {
   return (
     <ActiveIdProvider>
       <MenuItemsProvider>
-        <LiveblocksProvider authEndpoint="/api/liveblocks-auth">
-          <RoomProvider
-            id="sidebar-room-2"
-            initialStorage={{
-              initialMenuItems: INITIAL_MENU_ITEMS,
-              menuItems: INITIAL_MENU_ITEMS,
-            }}
-          >
-            <Nav />
+        <MarkdownProvider>
+          <LiveblocksProvider authEndpoint="/api/liveblocks-auth">
+            <RoomProvider
+              id="sidebar-room-2"
+              initialStorage={{
+                initialMenuItems: INITIAL_MENU_ITEMS,
+                menuItems: INITIAL_MENU_ITEMS,
+              }}
+            >
+              <Nav />
 
-            <div className="flex">
-              <div className="fixed h-full">
-                <LeftSidebar />
+              <div className="flex">
+                <div className="fixed h-full">
+                  <LeftSidebar />
+                </div>
+              </div>
+            </RoomProvider>
+            <div className="flex-1 ml-64">
+              <div className="flex">
+                <div className="w-1/2">
+                  <LeftMain />
+                </div>
+                <div className="w-1/2">
+                  <RightMain />
+                </div>
               </div>
             </div>
-          </RoomProvider>
-          <div className="flex-1 ml-64">
-            <div className="flex">
-              <div className="w-1/2">
-                <LeftMain />
-              </div>
-              <div className="w-1/2">
-                <RightMain />
-              </div>
-            </div>
-          </div>
-        </LiveblocksProvider>
+          </LiveblocksProvider>
+        </MarkdownProvider>
       </MenuItemsProvider>
     </ActiveIdProvider>
   );

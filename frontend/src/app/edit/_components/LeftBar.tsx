@@ -11,8 +11,7 @@ import { useMenuItems } from '../_contexts/MenuItemsContext';
 
 function LeftBarContent() {
   const { activeId, setActiveId } = useActiveId();
-  const { initialItems, setInitialItems } = useMenuItems();
-  const [menuItems, setMenuItems] = useState<MenuItem[] | null>(null);
+  const { initialItems, setInitialItems, menuItems, setMenuItems } = useMenuItems();
   const [draggedItem, setDraggedItem] = useState<MenuItem | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState<string>('');

@@ -9,6 +9,7 @@ import '@blocknote/mantine/style.css';
 import * as Y from 'yjs';
 import { LiveblocksYjsProvider } from '@liveblocks/yjs';
 import { useRoom } from '@liveblocks/react/suspense';
+import { useMarkdown } from '../_contexts/MarkdownContext';
 
 type EditorProps = {
   doc: Y.Doc;
@@ -40,6 +41,25 @@ export function Editor() {
 }
 
 function BlockNote({ doc, provider }: EditorProps) {
+  const room = useRoom();
+  const { markdowns, setMarkdowns } = useMarkdown();
+  const id = room.id.slice(5);
+
+  const onChange = async () => {
+    // 현재 에디터 내용을 마크다운으로 변환
+    const markdown = await editor.blocksToMarkdownLossy(editor.document);
+
+    // markdowns 배열을 순회하면서 id가 일치하는 항목만 content 업데이트
+    const updatedMarkdowns = markdowns!.map((item) => {
+      if (item.id === id) {
+        return { ...item, content: markdown };
+      }
+      return item;
+    });
+
+    setMarkdowns(updatedMarkdowns);
+  };
+
   const editor: BlockNoteEditor = useCreateBlockNote({
     collaboration: {
       provider,
@@ -51,5 +71,9 @@ function BlockNote({ doc, provider }: EditorProps) {
     },
   });
 
-  return <BlockNoteView editor={editor} />;
+  return (
+    <div>
+      <BlockNoteView editor={editor} onChange={onChange} />
+    </div>
+  );
 }
