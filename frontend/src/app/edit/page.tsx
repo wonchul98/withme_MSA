@@ -50,6 +50,9 @@ function LeftMain() {
     </ClientSideSuspense>
   );
 }
+function RightMain() {
+  return <>test</>;
+}
 
 function RoomWithEditor({ id }: { id: string }) {
   const { activeId } = useActiveId();
@@ -94,8 +97,15 @@ export default function EditPage() {
               </div>
             </div>
           </RoomProvider>
-          <div className="ml-64">
-            <LeftMain />
+          <div className="flex-1 ml-64">
+            <div className="flex">
+              <div className="w-1/2">
+                <LeftMain />
+              </div>
+              <div className="w-1/2">
+                <RightMain />
+              </div>
+            </div>
           </div>
         </LiveblocksProvider>
       </MenuItemsProvider>
