@@ -9,6 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Nav from './_components/Nav';
 import { MarkdownView } from './_components/MarkdownView';
 import { MarkdownProvider } from './_contexts/MarkdownContext';
+import { MarkdownPreview } from './_components/MarkdownPreview';
 
 const INITIAL_MENU_ITEMS = [
   { id: uuidv4(), label: 'Dashboard' },
@@ -53,7 +54,12 @@ function LeftMain() {
   );
 }
 function RightMain() {
-  return <MarkdownView />;
+  return (
+    <div>
+      <MarkdownView />
+      <MarkdownPreview />
+    </div>
+  );
 }
 
 function RoomWithEditor({ id }: { id: string }) {

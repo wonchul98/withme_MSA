@@ -36,7 +36,7 @@ export function MarkdownView() {
   return (
     <div className="space-y-4">
       {markdowns &&
-        markdowns.map((markdown, index) => (
+        markdowns.map((markdown) => (
           <div key={markdown.id} className="prose max-w-none">
             <div className="whitespace-pre-wrap">{markdown.content}</div>
           </div>
