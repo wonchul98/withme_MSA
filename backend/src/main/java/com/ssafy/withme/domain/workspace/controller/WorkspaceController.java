@@ -17,7 +17,7 @@ import java.time.format.DateTimeFormatter;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/workspace")
+@RequestMapping("/api/workspace")
 public class WorkspaceController {
 
     private final WorkspaceService workspaceService;

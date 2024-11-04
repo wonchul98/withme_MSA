@@ -8,7 +8,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @EnableFeignClients
 //TODO : Security 구현 시 security 무시 해제
-@SpringBootApplication(exclude = SecurityAutoConfiguration.class)
+//@SpringBootApplication(exclude = SecurityAutoConfiguration.class)
+@SpringBootApplication
 public class WithmeApplication {
 
 	public static void main(String[] args) {

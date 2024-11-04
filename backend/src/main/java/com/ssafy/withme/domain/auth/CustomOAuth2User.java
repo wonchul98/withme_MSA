@@ -15,6 +15,7 @@ import java.util.Map;
 public class CustomOAuth2User implements OAuth2User {
     private final OAuth2User oAuth2User;
     private final String accessToken;
+    private final Long id;
 
     @Override
     public Map<String, Object> getAttributes() {
@@ -29,9 +30,5 @@ public class CustomOAuth2User implements OAuth2User {
     @Override
     public String getName() {
         return oAuth2User.getName();
-    }
-
-    public String getToken(){
-        return accessToken;
     }
 }
