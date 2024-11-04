@@ -27,6 +27,22 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+.responsive_workspaceheader {
+  display: flex;
+  flex-direction: column; /* 기본적으로 세로 정렬 */
+  padding-top: 30px;
+  padding-bottom: 30px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  /* 768px 이상에서 가로 정렬 */
+  .responsive_workspaceheader {
+    flex-direction: row;
+  }
+}
+
 .responsive_mainResponsive {
   width: 1728px;
   margin-left: auto;
@@ -95,4 +111,79 @@ body {
 .workspace-image:hover ~ .workspace-item,
 .workspace-item:hover {
   visibility: visible;
+}
+
+.scrollbar {
+  width: 250px;
+  height: 250px;
+  overflow-y: scroll; /*  */
+}
+
+/* 스크롤바의 폭 너비 */
+.scrollbar::-webkit-scrollbar {
+  width: 10px;
+  border-radius: 10px;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  background: #020623; /* 스크롤바 색상 */
+  border-radius: 10px; /* 스크롤바 둥근 테두리 */
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  background: rgba(121, 121, 121, 0.1); /*스크롤바 뒷 배경 색상*/
+}
+.custom-checkbox {
+  -webkit-appearance: none; /* 크롬, 사파리 */
+  -moz-appearance: none; /* 파이어폭스 */
+  appearance: none; /* 기본 체크박스 스타일 제거 */
+  width: 20px; /* 체크박스 크기 */
+  height: 20px; /* 체크박스 크기 */
+  border: 2px solid #020623; /* 체크박스 테두리 색상 */
+  border-radius: 4px; /* 체크박스 모서리 둥글게 */
+  cursor: pointer; /* 커서 포인터 */
+  outline: none; /* 포커스 아웃라인 제거 */
+  position: relative; /* 포지션 설정 */
+}
+
+.custom-checkbox:checked {
+  background-color: #020623; /* 체크 시 배경 색상 */
+}
+
+.custom-checkbox:checked::after {
+  content: ''; /* 체크 표시 */
+  position: absolute;
+  top: 4px; /* 체크 표시 위치 조정 */
+  left: 4px; /* 체크 표시 위치 조정 */
+  width: 8px; /* 체크 표시 크기 */
+  height: 8px; /* 체크 표시 크기 */
+  background-color: #000; /* 체크 표시 색상 */
+}
+
+.container-login {
+  background-color: white; /* bg-white */
+  width: 100%; /* w-full */
+  max-width: 32rem; /* max-w-lg (32rem = 512px) */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* shadow-lg */
+  text-align: center; /* text-center */
+  display: flex; /* flex */
+  border-radius: 0.5rem; /* rounded-lg */
+  overflow: hidden; /* overflow-hidden */
+  flex-direction: column; /* flex-col */
+}
+
+@media (min-width: 768px) {
+  /* md:flex-row */
+  .container-login {
+    flex-direction: row; /* flex-row */
+  }
+}
+
+.container-wrapper {
+  height: 100vh;
+  background-color: #f7f9fa;
+}
+
+.container-block {
+  height: 67px;
 }

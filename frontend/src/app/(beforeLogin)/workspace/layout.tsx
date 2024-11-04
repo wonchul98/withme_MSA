@@ -1,12 +1,12 @@
 import { ReactNode } from 'react';
-import Nav from '../_components/Nav';
-type Props = { children: ReactNode };
+type Props = { children: ReactNode; modal: ReactNode };
 export default function Layout({ children }: Props) {
   return (
-    <div>
+    <div className="">
       <style>
         {`
 /* [project]/src/app/geistsans_9fc57718.module.css [app-client] (css) */
+
 @font-face {
   font-family: geistSans;
   src: url("../media/GeistVF-s.p.7fe29570.woff") format("woff");
@@ -244,6 +244,7 @@ html, :host {
 body {
   margin: 0;
   line-height: inherit;
+
 }
 
 hr {
@@ -811,12 +812,15 @@ body {
   color: black;
 }
 
+.justify-between {
+  justify-content: space-between;
+}
 
 /*# sourceMappingURL=src_app_c7d265._.css.map*/
 
         `}
       </style>
-      <Nav />
+
       {children}
     </div>
   );

@@ -6,6 +6,7 @@ export default function Nav() {
   return (
     <nav
       style={{
+        position: 'fixed',
         backgroundColor: '#020623', // bg-[#020623]
         width: '100%',
         padding: '12px', // p-[12px]
@@ -20,7 +21,7 @@ export default function Nav() {
           src="/Logo.png"
           alt="logo of the image"
           width={200}
-          height={43.05}
+          height={43}
           sizes="100%"
           style={{ width: '200px', height: '100%' }}
         />
