@@ -6,17 +6,17 @@ import java.util.List;
 
 public record IntegratedWorkspaceResponse(
         Slice<WorkspaceInfoResponse> visibleWorkspaces,
-        List<WorkspaceInfoResponse> invisivleWorkspaces
+        List<WorkspaceInfoResponse> invisibleWorkspaces
 ) {
     @Builder
     public IntegratedWorkspaceResponse{
     }
 
     public static IntegratedWorkspaceResponse from(Slice<WorkspaceInfoResponse> visibleWorkspaces,
-                                          List<WorkspaceInfoResponse> invisivleWorkspaces) {
+                                          List<WorkspaceInfoResponse> invisibleWorkspaces) {
         return IntegratedWorkspaceResponse.builder()
                 .visibleWorkspaces(visibleWorkspaces)
-                .invisivleWorkspaces(invisivleWorkspaces)
+                .invisibleWorkspaces(invisibleWorkspaces)
                 .build();
     }
 }
