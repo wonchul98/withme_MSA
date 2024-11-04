@@ -27,7 +27,7 @@ export async function POST() {
   });
 
   // Use a naming pattern to allow access to rooms with a wildcard
-  session.allow(`sidebar-room-*`, session.FULL_ACCESS);
+  session.allow(`sidebar-room`, session.FULL_ACCESS);
   session.allow(`room-*`, session.FULL_ACCESS);
 
   const { status, body } = await session.authorize();
