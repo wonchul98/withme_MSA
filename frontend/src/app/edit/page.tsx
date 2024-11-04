@@ -73,11 +73,7 @@ function RoomWithEditor({ id }: { id: string }) {
       }}
     >
       <ClientSideSuspense fallback={<div>Loading...</div>}>
-        <div
-          className={`absolute inset-0 p-4 transition-opacity duration-300 ${
-            activeId === id ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
-          }`}
-        >
+        <div className={`p-4 transition-opacity duration-300 ${activeId === id ? '' : 'hidden pointer-events-none'}`}>
           <Editor />
         </div>
       </ClientSideSuspense>
@@ -107,11 +103,11 @@ export default function EditPage() {
               </div>
             </RoomProvider>
             <div className="flex-1 ml-64">
-              <div className="flex">
-                <div className="w-1/2">
+              <div className="flex flex-col md:flex-row" style={{ height: `calc(100vh - 72px)` }}>
+                <div className="w-full md:w-1/2 h-1/2 md:h-full overflow-y-auto">
                   <LeftMain />
                 </div>
-                <div className="w-1/2">
+                <div className="w-full md:w-1/2 h-1/2 md:h-full overflow-y-auto">
                   <RightMain />
                 </div>
               </div>
