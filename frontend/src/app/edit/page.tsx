@@ -6,6 +6,7 @@ import { Editor } from './_components/Editor';
 import { LeftBar } from './_components/LeftBar';
 import { LiveblocksProvider, RoomProvider, ClientSideSuspense } from '@liveblocks/react/suspense';
 import { v4 as uuidv4 } from 'uuid';
+import Nav from './_components/Nav';
 
 const INITIAL_MENU_ITEMS = [
   { id: uuidv4(), label: 'Dashboard' },
@@ -22,17 +23,9 @@ const INITIAL_MENU_ITEMS = [
 
 function LeftSidebar() {
   return (
-    <RoomProvider
-      id="sidebar-room-2"
-      initialStorage={{
-        initialMenuItems: INITIAL_MENU_ITEMS,
-        menuItems: INITIAL_MENU_ITEMS,
-      }}
-    >
-      <div className="bg-gray-900">
-        <LeftBar />
-      </div>
-    </RoomProvider>
+    <div className="bg-gray-900 h-full">
+      <LeftBar />
+    </div>
   );
 }
 function LeftMain() {
@@ -86,13 +79,23 @@ export default function EditPage() {
     <ActiveIdProvider>
       <MenuItemsProvider>
         <LiveblocksProvider authEndpoint="/api/liveblocks-auth">
-          <div className="flex min-h-screen">
-            <div className="fixed h-full">
-              <LeftSidebar />
+          <RoomProvider
+            id="sidebar-room-2"
+            initialStorage={{
+              initialMenuItems: INITIAL_MENU_ITEMS,
+              menuItems: INITIAL_MENU_ITEMS,
+            }}
+          >
+            <Nav />
+
+            <div className="flex">
+              <div className="fixed h-full">
+                <LeftSidebar />
+              </div>
             </div>
-            <div className="flex-1 ml-64">
-              <LeftMain />
-            </div>
+          </RoomProvider>
+          <div className="ml-64">
+            <LeftMain />
           </div>
         </LiveblocksProvider>
       </MenuItemsProvider>
