@@ -1,9 +1,11 @@
 package com.ssafy.withme.global.openfeign;
 
+import com.ssafy.withme.global.openfeign.dto.response.DetailResponseDTO;
 import com.ssafy.withme.global.openfeign.dto.response.RepoResponseDTO;
 import com.ssafy.withme.global.openfeign.dto.response.UserResponseDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
@@ -16,4 +18,7 @@ public interface FeignGithubAPIClient {
 
     @GetMapping("/user/repos")
     List<RepoResponseDTO> GetAuthenticatedUserRepos(@RequestHeader("Authorization") String userToken);
+
+    @GetMapping("/repos/{owner}/{repo}/contents/{path}")
+    List<DetailResponseDTO> GetRepoDetails(@RequestHeader("Authorization") String userToken, @PathVariable String owner, @PathVariable String repo, @PathVariable String path);
 }
