@@ -11,6 +11,7 @@ import { LiveblocksYjsProvider } from '@liveblocks/yjs';
 import { useRoom } from '@liveblocks/react/suspense';
 import { useMarkdown } from '../_contexts/MarkdownContext';
 import { useEditor } from '../_contexts/EditorContext';
+import { useActiveId } from '../_contexts/ActiveIdContext';
 
 type EditorProps = {
   doc: Y.Doc;
@@ -85,9 +86,11 @@ function BlockNote({ doc, provider }: EditorProps) {
     }
   }, [editor.document]);
 
+  const { activeId } = useActiveId();
+
   return (
     <div>
-      <BlockNoteView editor={editor} onChange={onChange} editable={false} />
+      <BlockNoteView editor={editor} onChange={onChange} editable={activeId === id} />
     </div>
   );
 }
