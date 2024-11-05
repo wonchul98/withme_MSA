@@ -3,6 +3,7 @@ package com.ssafy.withme.domain.auth;
 import com.ssafy.withme.domain.member.entity.Member;
 import com.ssafy.withme.domain.member.entity.Provider;
 import com.ssafy.withme.domain.member.repository.MemberRepository;
+import com.ssafy.withme.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -24,6 +26,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final MemberRepository memberRepository;
 
     @Override
+    @Transactional
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         Provider provider = registrationId.equals(String.valueOf(Provider.GITHUB).toLowerCase()) ? Provider.GITHUB : Provider.GITLAB;
@@ -34,10 +37,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         //github 우선
         String userName = oAuth2User.getAttribute("login");
 
-        Long userId = memberRepository.findByUsernameAndProvider(userName, provider)
-                .orElse(memberRepository.save(new Member(userName, provider)))
-                .getId();
+        Optional<Member> result = memberRepository.findByUsernameAndProvider(userName, provider);
+        Member member = result.orElseGet(() -> {
+            Member newMember = new Member(userName, provider);
 
-        return new CustomOAuth2User(oAuth2User, tokenValue, userId);
+            newMember = memberRepository.save(newMember);
+            return newMember;
+        });
+
+        return new CustomOAuth2User(oAuth2User, tokenValue, member);
     }
 }
