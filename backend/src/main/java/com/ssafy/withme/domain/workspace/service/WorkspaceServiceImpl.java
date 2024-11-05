@@ -12,6 +12,7 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Security;
 import java.util.List;
 
 import java.time.LocalDateTime;
@@ -38,7 +39,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     private IntegratedWorkspaceResponse changeVisibility(String repositoryUrl, boolean isVisible) {
-        Long memberId = 1L; // TODO : 실제 멤버 ID로 변경
+        Long memberId = 1L;
         Repo repository = repoRepository.findByMember_IdAndWorkspace_RepoUrl(memberId, repositoryUrl)
                 .orElseThrow(() -> new BusinessException(ErrorCode.REPO_NOT_FOUND));
         repository.changeIsVisible(isVisible);

@@ -1,5 +1,6 @@
 package com.ssafy.withme.domain.readme.controller;
 
+import com.ssafy.withme.domain.readme.dto.request.ReadMeDraftRequest;
 import com.ssafy.withme.domain.readme.dto.request.SaveReadMeRequestDTO;
 import com.ssafy.withme.domain.readme.dto.response.GetReadMeResponseDTO;
 import com.ssafy.withme.domain.readme.dto.response.SearchReadMeResponseDTO;
@@ -28,5 +29,10 @@ public class ReadMeController {
     @GetMapping("/search")
     public List<SearchReadMeResponseDTO> getSearchReadMe(@RequestParam String keyword) {
         return readMeService.searchReadme(keyword);
+    }
+
+    @GetMapping("/draft")
+    public String makeReadMeDraft(@RequestBody ReadMeDraftRequest readMeDraftRequest) {
+        return readMeService.makeReadMeDraft(readMeDraftRequest);
     }
 }

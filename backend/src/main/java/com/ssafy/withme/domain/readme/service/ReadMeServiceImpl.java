@@ -1,5 +1,6 @@
 package com.ssafy.withme.domain.readme.service;
 
+import com.ssafy.withme.domain.readme.dto.request.ReadMeDraftRequest;
 import com.ssafy.withme.domain.readme.dto.request.SaveReadMeRequestDTO;
 import com.ssafy.withme.domain.readme.dto.response.GetReadMeResponseDTO;
 import com.ssafy.withme.domain.readme.dto.response.SearchReadMeResponseDTO;
@@ -14,8 +15,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ReadMeServiceImpl implements ReadMeService {
-    final private WorkspaceRepository workspaceRepository;
 
+    final private WorkspaceRepository workspaceRepository;
 
     @Override
     public String saveReadme(SaveReadMeRequestDTO readMeRequestDTO) {
@@ -43,5 +44,10 @@ public class ReadMeServiceImpl implements ReadMeService {
                         workspace.getReadmeContent()
                 ))
                 .toList();
+    }
+
+    @Override
+    public String makeReadMeDraft(ReadMeDraftRequest readMeDraftRequest) {
+        return "";
     }
 }
