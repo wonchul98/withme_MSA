@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ActiveIdProvider } from './_contexts/ActiveIdContext';
 import { MenuItemsProvider } from './_contexts/MenuItemsContext';
 import { EditorProvider } from './_contexts/EditorContext';
@@ -27,30 +27,27 @@ const INITIAL_MENU_ITEMS = [
 ];
 
 const LEFT_SIDEBAR_WIDTH = 320;
-const COLLAPSED_LEFT_SIDEBAR_WIDTH = 80;
 
 export default function EditPage() {
   const [leftSize, setLeftSize] = useState(50);
   const [isDragging, setIsDragging] = useState(false);
   const [isVertical, setIsVertical] = useState(window.innerWidth < 768);
-  const [isCollapsed, setIsCollapsed] = useState(window.innerWidth < 1400);
+  const mainContainerRef = useRef<HTMLDivElement | null>(null);
 
   const handleMouseDown = () => setIsDragging(true);
 
   const handleMouseMove = (e: MouseEvent) => {
-    if (isDragging) {
+    if (isDragging && mainContainerRef.current) {
+      const containerWidth = mainContainerRef.current.offsetWidth;
       if (isVertical) {
-        // 세로 방향일 때 (상단/하단 높이 조정)
         const adjustedY = e.clientY - 72; // 72px은 Nav 높이로 가정
         const newLeftHeight = (adjustedY / (window.innerHeight - 72)) * 100;
         if (newLeftHeight > 0 && newLeftHeight < 100) {
           setLeftSize(newLeftHeight);
         }
       } else {
-        // 가로 방향일 때 (좌/우 너비 조정)
-        const adjustedX = e.clientX - (isCollapsed ? COLLAPSED_LEFT_SIDEBAR_WIDTH : LEFT_SIDEBAR_WIDTH);
-        const newLeftWidth =
-          (adjustedX / (window.innerWidth - (isCollapsed ? COLLAPSED_LEFT_SIDEBAR_WIDTH : LEFT_SIDEBAR_WIDTH))) * 100;
+        const adjustedX = e.clientX - LEFT_SIDEBAR_WIDTH;
+        const newLeftWidth = (adjustedX / containerWidth) * 100;
         if (newLeftWidth > 0 && newLeftWidth < 100) {
           setLeftSize(newLeftWidth);
         }
@@ -80,8 +77,7 @@ export default function EditPage() {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsVertical(window.innerWidth < 768); // md 기준 (768px)
-      setIsCollapsed(window.innerWidth < 1400); // 1400px 미만일 때 LeftBar 접힘
+      setIsVertical(window.innerWidth < 768);
     };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
@@ -112,15 +108,16 @@ export default function EditPage() {
                       menuItems: INITIAL_MENU_ITEMS,
                     }}
                   >
-                    <div
-                      style={{ width: isCollapsed ? COLLAPSED_LEFT_SIDEBAR_WIDTH : LEFT_SIDEBAR_WIDTH }}
-                      className="h-inherit"
-                    >
-                      <LeftBar isCollapsed={isCollapsed} />
+                    <div className="h-inherit">
+                      <LeftBar />
                     </div>
                   </RoomProvider>
 
-                  <div className="flex-1">
+                  <div
+                    className="flex-1"
+                    ref={mainContainerRef}
+                    style={{ width: `calc(100% - ${LEFT_SIDEBAR_WIDTH}px)` }}
+                  >
                     <div className="flex flex-col md:flex-row" style={{ height: `calc(100vh - 72px)` }}>
                       <div
                         style={isVertical ? { height: `${leftSize}%` } : { width: `${leftSize}%` }}
@@ -143,7 +140,7 @@ export default function EditPage() {
 
                       <div
                         style={isVertical ? { height: `${100 - leftSize}%` } : { width: `${100 - leftSize}%` }}
-                        className="h-full w-full overflow-y-auto"
+                        className="h-full overflow-y-auto"
                       >
                         <RightMain />
                       </div>

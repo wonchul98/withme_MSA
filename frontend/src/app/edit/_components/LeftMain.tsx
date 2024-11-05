@@ -16,7 +16,7 @@ export default function LeftMain() {
 
   return (
     <ClientSideSuspense fallback={<div>Loading...</div>}>
-      <div className="bg-white h-full w-full">
+      <div className="bg-white h-inherit w-full">
         {initialItems.map((item) => (
           <RoomWithEditor key={`room-${item.id}`} id={item.id} />
         ))}

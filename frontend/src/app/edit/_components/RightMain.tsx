@@ -11,7 +11,7 @@ export default function RightMain() {
   };
 
   return (
-    <div className="flex flex-col w-full h-full items-center bg-white">
+    <div className="flex flex-col h-full items-center bg-white">
       <div className="flex items-center justify-center my-5 w-[300px] h-[40px] bg-[#495365] text-white rounded-[90px]">
         <button
           onClick={() => handleViewChange('markdown')}

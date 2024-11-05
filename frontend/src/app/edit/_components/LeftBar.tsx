@@ -10,7 +10,7 @@ import { useActiveId } from '../_contexts/ActiveIdContext';
 import { useMenuItems } from '../_contexts/MenuItemsContext';
 import { useEditor } from '../_contexts/EditorContext';
 
-function LeftBarContent({ collapsed }: { collapsed: boolean }) {
+function LeftBarContent() {
   const { activeId, setActiveId } = useActiveId();
   const { initialItems, setInitialItems, menuItems, setMenuItems } = useMenuItems();
   const { editorsRef, updateEditorsEditableState } = useEditor();
@@ -181,7 +181,6 @@ function LeftBarContent({ collapsed }: { collapsed: boolean }) {
             transition-colors duration-200
             text-xl font-bold
             group
-            ${collapsed ? 'text-center' : 'text-left'} transition-all duration-200
             ${editingId !== item.id ? 'cursor-grab active:cursor-grabbing' : ''}
             ${
               activeId === item.id
@@ -211,7 +210,7 @@ function LeftBarContent({ collapsed }: { collapsed: boolean }) {
           ) : (
             <span>{item.label}</span>
           )}
-          {!collapsed && (
+          {
             <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity gap-2">
               <button onClick={(e) => handleEditClick(e, item)} className="hover:text-green-500">
                 <EditIcon />
@@ -220,11 +219,11 @@ function LeftBarContent({ collapsed }: { collapsed: boolean }) {
                 <DeleteIcon />
               </button>
             </div>
-          )}
+          }
         </div>
       ))}
 
-      {menuItems.length <= 9 && !collapsed && (
+      {menuItems.length <= 9 && (
         <button
           onClick={() => addNewTab()}
           className="w-full px-4 py-3 rounded-lg
@@ -244,12 +243,12 @@ function LeftBarContent({ collapsed }: { collapsed: boolean }) {
   );
 }
 
-export function LeftBar({ isCollapsed }: { isCollapsed: boolean }) {
+export function LeftBar() {
   return (
     <ClientSideSuspense fallback={<div>Loading...</div>}>
       {() => (
         <div className="bg-gray-900 w-80 border-r h-full ">
-          <LeftBarContent collapsed={isCollapsed} />
+          <LeftBarContent />
         </div>
       )}
     </ClientSideSuspense>
