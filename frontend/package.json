@@ -9,23 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@blocknote/core": "^0.18.0",
-    "@blocknote/mantine": "^0.18.1",
-    "@blocknote/react": "^0.18.1",
-    "@liveblocks/client": "^2.10.2",
-    "@liveblocks/node": "^2.10.2",
-    "@liveblocks/react": "^2.10.2",
-    "@liveblocks/yjs": "^2.10.2",
-    "classnames": "^2.5.1",
-    "framer-motion": "^11.11.11",
     "next": "15.0.2",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "react-markdown": "^9.0.1",
-    "rehype-raw": "^7.0.0",
-    "remark-breaks": "^4.0.0",
-    "remark-gfm": "^4.0.0",
-    "uuid": "^11.0.2"
+    "react": "19.0.0-rc-02c0e824-20241028",
+    "react-dom": "19.0.0-rc-02c0e824-20241028"
   },
   "devDependencies": {
     "@types/node": "^20",
