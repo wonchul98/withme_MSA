@@ -3,9 +3,11 @@
 import Image from 'next/image';
 import CloseBtn from '@/app/_components/CloseBtn';
 import { useRouter } from 'next/navigation';
+import useAuth from '@/hooks/useAuth';
 
 export default function LoginModal() {
   const router = useRouter();
+  const { sendLoginAPI } = useAuth();
 
   const handleClose = () => {
     router.back(); // 모달 닫기
@@ -28,8 +30,8 @@ export default function LoginModal() {
           <div className="absolute top-4 right-4">
             <CloseBtn handleClose={handleClose} />
           </div>
-          <h1 className="font-bold text-[40px] ">로그인</h1>
-          <button className="rounded-3xl border border-black px-4 py-1 flex gap-5 mt-[30px]">
+          <h1 className="font-bold text-[40px]">로그인</h1>
+          <button className="rounded-3xl border border-black px-4 py-1 flex gap-5 mt-[30px]" onClick={sendLoginAPI}>
             <Image
               className="workspace-image cursor-pointer"
               src="/githubLogo.png"
