@@ -10,7 +10,7 @@ import { useActiveId } from '../_contexts/ActiveIdContext';
 import { useMenuItems } from '../_contexts/MenuItemsContext';
 import { useEditor } from '../_contexts/EditorContext';
 
-function LeftBarContent() {
+function LeftBarContent({ collapsed }: { collapsed: boolean }) {
   const { activeId, setActiveId } = useActiveId();
   const { initialItems, setInitialItems, menuItems, setMenuItems } = useMenuItems();
   const { editorsRef, updateEditorsEditableState } = useEditor();
@@ -163,7 +163,7 @@ function LeftBarContent() {
   if (!menuItems) return null;
 
   return (
-    <div className="h-full p-4 space-y-2">
+    <div className="h-full px-4 py-6 space-y-2">
       {menuItems.map((item: MenuItem) => (
         <div
           key={item.id}
@@ -179,8 +179,9 @@ function LeftBarContent() {
           className={`
             w-full px-4 py-3 rounded-lg
             transition-colors duration-200
-            text-sm font-medium
+            text-xl font-bold
             group
+            ${collapsed ? 'text-center' : 'text-left'} transition-all duration-200
             ${editingId !== item.id ? 'cursor-grab active:cursor-grabbing' : ''}
             ${
               activeId === item.id
@@ -208,22 +209,22 @@ function LeftBarContent() {
               autoFocus
             />
           ) : (
-            <>
-              <span>{item.label}</span>
-              <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity gap-2">
-                <button onClick={(e) => handleEditClick(e, item)} className="hover:text-green-500">
-                  <EditIcon />
-                </button>
-                <button onClick={(e) => handleDeleteClick(e, item.id)} className="hover:text-red-500">
-                  <DeleteIcon />
-                </button>
-              </div>
-            </>
+            <span>{item.label}</span>
+          )}
+          {!collapsed && (
+            <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity gap-2">
+              <button onClick={(e) => handleEditClick(e, item)} className="hover:text-green-500">
+                <EditIcon />
+              </button>
+              <button onClick={(e) => handleDeleteClick(e, item.id)} className="hover:text-red-500">
+                <DeleteIcon />
+              </button>
+            </div>
           )}
         </div>
       ))}
 
-      {menuItems.length <= 9 && (
+      {menuItems.length <= 9 && !collapsed && (
         <button
           onClick={() => addNewTab()}
           className="w-full px-4 py-3 rounded-lg
@@ -243,14 +244,12 @@ function LeftBarContent() {
   );
 }
 
-export function LeftBar() {
+export function LeftBar({ isCollapsed }: { isCollapsed: boolean }) {
   return (
     <ClientSideSuspense fallback={<div>Loading...</div>}>
       {() => (
-        <div className="flex">
-          <div className="bg-gray-900 w-64 border-r border-gray-800">
-            <LeftBarContent />
-          </div>
+        <div className="bg-gray-900 w-80 border-r h-full ">
+          <LeftBarContent collapsed={isCollapsed} />
         </div>
       )}
     </ClientSideSuspense>

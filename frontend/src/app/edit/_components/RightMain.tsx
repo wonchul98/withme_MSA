@@ -3,7 +3,7 @@ import { MarkdownView } from './MarkdownView';
 import { AIDraft } from './AIDraft';
 import { MarkdownPreview } from './MarkdownPreview';
 
-function ViewToggleButton() {
+export default function RightMain() {
   const [activeView, setActiveView] = useState<'markdown' | 'preview' | 'ai'>('markdown');
 
   const handleViewChange = (view: 'markdown' | 'preview' | 'ai') => {
@@ -11,7 +11,7 @@ function ViewToggleButton() {
   };
 
   return (
-    <div className="flex flex-col w-[90%] h-full items-center">
+    <div className="flex flex-col w-full h-full items-center bg-white">
       <div className="flex items-center justify-center my-5 w-[300px] h-[40px] bg-[#495365] text-white rounded-[90px]">
         <button
           onClick={() => handleViewChange('markdown')}
@@ -32,7 +32,7 @@ function ViewToggleButton() {
           AI
         </button>
       </div>
-      <div className="mt-5 text-[20px] w-full h-[90%] rounded-[20] p-3 bg-[#F4F4F4] overflow-x-auto overflow-y-scroll">
+      <div className="mt-5 text-[20px] w-full h-[90%] p-7 bg-white overflow-x-auto overflow-y-scroll">
         {activeView === 'markdown' && <MarkdownView />}
         {activeView === 'preview' && <MarkdownPreview />}
         {activeView === 'ai' && <AIDraft />}
@@ -40,5 +40,3 @@ function ViewToggleButton() {
     </div>
   );
 }
-
-export default ViewToggleButton;
