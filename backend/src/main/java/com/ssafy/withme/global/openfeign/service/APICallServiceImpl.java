@@ -5,6 +5,7 @@ import com.ssafy.withme.global.openfeign.dto.response.DetailResponseDTO;
 import com.ssafy.withme.global.openfeign.dto.response.RepoResponseDTO;
 import com.ssafy.withme.global.openfeign.dto.response.UserResponseDTO;
 import com.ssafy.withme.global.openfeign.dto.response.refined.RefinedRepoDTO;
+import com.ssafy.withme.global.openfeign.dto.response.refined.RefinedRepoDetailDTO;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -34,8 +35,14 @@ public class APICallServiceImpl implements APICallService {
     }
 
     @Override
+    public List<RefinedRepoDetailDTO> getRepoDetails(String userToken, String owner, String repo, String path) {
+        return getRepoDetailsAsync(userToken, owner, repo, path)
+                .thenApply(details -> details.stream().map(RefinedRepoDetailDTO::new).toList())
+                .join();
+    }
+
     @Async
-    public CompletableFuture<List<DetailResponseDTO>> getRepoDetailsAsync(String userToken, String owner, String repo, String path) {
+    protected CompletableFuture<List<DetailResponseDTO>> getRepoDetailsAsync(String userToken, String owner, String repo, String path) {
         List<DetailResponseDTO> details = feignGithubAPIClient.GetRepoDetails(userToken, owner, repo, path);
         List<DetailResponseDTO> result = new ArrayList<>(details);
 
