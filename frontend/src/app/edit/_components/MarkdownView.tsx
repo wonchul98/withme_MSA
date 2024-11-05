@@ -34,7 +34,7 @@ export function MarkdownView() {
   }, [menuItems]);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 p-3">
       {markdowns &&
         markdowns.map((markdown, index) => (
           <div key={markdown.id} className="prose max-w-none">
