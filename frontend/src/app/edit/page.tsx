@@ -7,9 +7,8 @@ import { LeftBar } from './_components/LeftBar';
 import { LiveblocksProvider, RoomProvider, ClientSideSuspense } from '@liveblocks/react/suspense';
 import { v4 as uuidv4 } from 'uuid';
 import Nav from './_components/Nav';
-import { MarkdownView } from './_components/MarkdownView';
 import { MarkdownProvider } from './_contexts/MarkdownContext';
-import { MarkdownPreview } from './_components/MarkdownPreview';
+import ViewToggleButton from './_components/ViewToggleButton';
 
 const INITIAL_MENU_ITEMS = [
   { id: uuidv4(), label: 'Dashboard' },
@@ -54,12 +53,7 @@ function LeftMain() {
   );
 }
 function RightMain() {
-  return (
-    <div>
-      <MarkdownView />
-      <MarkdownPreview />
-    </div>
-  );
+  return <ViewToggleButton />;
 }
 
 function RoomWithEditor({ id }: { id: string }) {
@@ -73,11 +67,7 @@ function RoomWithEditor({ id }: { id: string }) {
       }}
     >
       <ClientSideSuspense fallback={<div>Loading...</div>}>
-        <div
-          className={`absolute inset-0 p-4 transition-opacity duration-300 ${
-            activeId === id ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
-          }`}
-        >
+        <div className={`p-4 transition-opacity duration-300 ${activeId === id ? '' : 'hidden pointer-events-none'}`}>
           <Editor />
         </div>
       </ClientSideSuspense>
@@ -107,11 +97,11 @@ export default function EditPage() {
               </div>
             </RoomProvider>
             <div className="flex-1 ml-64">
-              <div className="flex">
-                <div className="w-1/2">
+              <div className="flex flex-col md:flex-row" style={{ height: `calc(100vh - 152px)` }}>
+                <div className="p-5 mt-[80px] w-full md:w-1/2 h-1/2 md:h-full overflow-y-auto">
                   <LeftMain />
                 </div>
-                <div className="w-1/2">
+                <div className="w-full md:w-1/2 h-1/2 md:h-full overflow-y-auto">
                   <RightMain />
                 </div>
               </div>

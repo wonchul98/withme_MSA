@@ -25,7 +25,8 @@ export function MarkdownPreview() {
             <ReactMarkdown
               remarkPlugins={[remarkGfm, remarkBreaks]}
               rehypePlugins={[rehypeRaw]}
-              className="whitespace-pre-wrap"
+              // className="whitespace-pre-wrap p-5"
+              // className="p-5"
             >
               {markdown.content}
             </ReactMarkdown>
