@@ -187,3 +187,8 @@ body {
 .container-block {
   height: 67px;
 }
+
+/* 마크다운 바디에서는 모든 css revert */
+.markdown-body * {
+  all: revert;
+}
