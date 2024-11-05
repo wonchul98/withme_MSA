@@ -14,6 +14,7 @@ import Nav from './_components/Nav';
 import { MarkdownProvider } from './_contexts/MarkdownContext';
 import RightMain from './_components/RightMain';
 import LeftMain from './_components/LeftMain';
+import { BiDotsVerticalRounded } from 'react-icons/bi';
 
 const INITIAL_MENU_ITEMS = [
   { id: uuidv4(), label: 'Dashboard' },
@@ -141,14 +142,16 @@ export default function EditPage() {
                     </div>
 
                     <div
-                      className="bg-gray-400 cursor-pointer"
+                      className="bg-gray-400 cursor-pointer flex flex-col items-center justify-around"
                       style={{
-                        width: isVertical ? '100%' : '5px',
-                        height: isVertical ? '5px' : '100%',
+                        width: isVertical ? '100%' : '6px',
+                        height: isVertical ? '6px' : '100%',
                         cursor: isVertical ? 'row-resize' : 'col-resize',
                       }}
                       onMouseDown={handleMouseDown}
-                    />
+                    >
+                      <BiDotsVerticalRounded size={isVertical ? 48 : 24} />
+                    </div>
 
                     <div
                       style={isVertical ? { height: `${100 - leftSize}%` } : { width: `${100 - leftSize}%` }}
