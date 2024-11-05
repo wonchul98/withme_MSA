@@ -111,10 +111,12 @@ public class APICallServiceImpl implements APICallService {
     }
 
     @Override
-    public void printTree(TreeNode node, String indent) {
-        System.out.println(indent + node.detail.name() + " (" + node.detail.type() + ")");
+    public String buildTreeString(TreeNode node, String indent) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(indent).append(node.detail.name()).append(" (").append(node.detail.type()).append(")\n");
         for (TreeNode child : node.children) {
-            printTree(child, indent + "  ");
+            sb.append(buildTreeString(child, indent + "  "));
         }
+        return sb.toString();
     }
 }

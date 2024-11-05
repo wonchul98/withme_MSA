@@ -17,5 +17,5 @@ public interface APICallService {
     APICallServiceImpl.TreeNode buildTree(List<RefinedRepoDetailDTO> items);
 
     // 디버깅용 트리 출력 메소드
-    void printTree(APICallServiceImpl.TreeNode node, String indent);
+    String buildTreeString(APICallServiceImpl.TreeNode node, String indent);
 }
