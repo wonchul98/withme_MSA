@@ -45,7 +45,7 @@ export default function EditPage() {
         // 세로 방향일 때 (상단/하단 높이 조정)
         const adjustedY = e.clientY - 72; // 72px은 Nav 높이로 가정
         const newLeftHeight = (adjustedY / (window.innerHeight - 72)) * 100;
-        if (newLeftHeight > 10 && newLeftHeight < 90) {
+        if (newLeftHeight > 0 && newLeftHeight < 100) {
           setLeftSize(newLeftHeight);
         }
       } else {
@@ -53,7 +53,7 @@ export default function EditPage() {
         const adjustedX = e.clientX - (isCollapsed ? COLLAPSED_LEFT_SIDEBAR_WIDTH : LEFT_SIDEBAR_WIDTH);
         const newLeftWidth =
           (adjustedX / (window.innerWidth - (isCollapsed ? COLLAPSED_LEFT_SIDEBAR_WIDTH : LEFT_SIDEBAR_WIDTH))) * 100;
-        if (newLeftWidth > 10 && newLeftWidth < 90) {
+        if (newLeftWidth > 0 && newLeftWidth < 100) {
           setLeftSize(newLeftWidth);
         }
       }
