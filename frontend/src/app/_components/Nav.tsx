@@ -13,6 +13,7 @@ export default function Nav() {
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
+        zIndex: '5',
       }}
     >
       <div style={{ flex: '1 1 0%' }}>
