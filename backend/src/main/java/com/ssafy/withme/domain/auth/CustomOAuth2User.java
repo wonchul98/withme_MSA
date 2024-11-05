@@ -1,5 +1,6 @@
 package com.ssafy.withme.domain.auth;
 
+import com.ssafy.withme.domain.member.entity.Member;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -15,7 +16,7 @@ import java.util.Map;
 public class CustomOAuth2User implements OAuth2User {
     private final OAuth2User oAuth2User;
     private final String accessToken;
-    private final Long id;
+    private final Member member;
 
     @Override
     public Map<String, Object> getAttributes() {
