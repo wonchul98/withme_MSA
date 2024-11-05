@@ -6,6 +6,7 @@ import com.ssafy.withme.domain.workspace.dto.Response.IntegratedWorkspaceRespons
 import com.ssafy.withme.domain.workspace.dto.Response.WorkspaceInfoResponse;
 import com.ssafy.withme.global.exception.BusinessException;
 import com.ssafy.withme.global.exception.ErrorCode;
+import com.ssafy.withme.global.util.SecurityUtils;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
@@ -27,6 +28,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     private final RepoRepository repoRepository;
     private final EntityManager entityManager;
+    private final SecurityUtils securityUtils;
 
     @Override
     public IntegratedWorkspaceResponse makeVisible(String repositoryUrl) {
@@ -39,7 +41,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     private IntegratedWorkspaceResponse changeVisibility(String repositoryUrl, boolean isVisible) {
-        Long memberId = 1L;
+        Long memberId = securityUtils.getMemberId();
         Repo repository = repoRepository.findByMember_IdAndWorkspace_RepoUrl(memberId, repositoryUrl)
                 .orElseThrow(() -> new BusinessException(ErrorCode.REPO_NOT_FOUND));
         repository.changeIsVisible(isVisible);
@@ -55,7 +57,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     public Slice<WorkspaceInfoResponse> getMyVisibleWorkspaces(Pageable pageable, LocalDateTime cursor) {
-        Long memberId = 1L; // TODO: 실제 멤버 ID로 변경
+        Long memberId = securityUtils.getMemberId();
         if (cursor == null) cursor = LocalDateTime.now();
 
         return repoRepository.findAllByMember_IdAndIsVisibleTrueAndUpdatedAtBefore(memberId, cursor, pageable)
@@ -64,7 +66,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     public List<WorkspaceInfoResponse> getMyInvisibleWorkspaces() {
-        Long memberId = 1L; // TODO: 실제 멤버 ID로 변경
+        Long memberId = securityUtils.getMemberId();
         return repoRepository.findAllByMember_IdAndIsVisibleFalse(memberId).stream()
                 .map(repository -> WorkspaceInfoResponse.from(repository.getWorkspace()))
                 .toList();
