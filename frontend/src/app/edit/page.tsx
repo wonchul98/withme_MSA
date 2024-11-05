@@ -2,6 +2,7 @@
 
 import { ActiveIdProvider, useActiveId } from './_contexts/ActiveIdContext';
 import { MenuItemsProvider, useMenuItems } from './_contexts/MenuItemsContext';
+import { EditorProvider } from './_contexts/EditorContext';
 import { Editor } from './_components/Editor';
 import { LeftBar } from './_components/LeftBar';
 import { LiveblocksProvider, RoomProvider, ClientSideSuspense } from '@liveblocks/react/suspense';
@@ -80,33 +81,35 @@ export default function EditPage() {
     <ActiveIdProvider>
       <MenuItemsProvider>
         <MarkdownProvider>
-          <LiveblocksProvider authEndpoint="/api/liveblocks-auth">
-            <RoomProvider
-              id="sidebar-room-2"
-              initialStorage={{
-                initialMenuItems: INITIAL_MENU_ITEMS,
-                menuItems: INITIAL_MENU_ITEMS,
-              }}
-            >
-              <Nav />
+          <EditorProvider>
+            <LiveblocksProvider authEndpoint="/api/liveblocks-auth">
+              <RoomProvider
+                id="sidebar-room-2"
+                initialStorage={{
+                  initialMenuItems: INITIAL_MENU_ITEMS,
+                  menuItems: INITIAL_MENU_ITEMS,
+                }}
+              >
+                <Nav />
 
-              <div className="flex">
-                <div className="fixed h-full">
-                  <LeftSidebar />
+                <div className="flex">
+                  <div className="fixed h-full">
+                    <LeftSidebar />
+                  </div>
+                </div>
+              </RoomProvider>
+              <div className="flex-1 ml-64">
+                <div className="flex flex-col md:flex-row" style={{ height: `calc(100vh - 152px)` }}>
+                  <div className="p-5 mt-[80px] w-full md:w-1/2 h-1/2 md:h-full overflow-y-auto">
+                    <LeftMain />
+                  </div>
+                  <div className="w-full md:w-1/2 h-1/2 md:h-full overflow-y-auto">
+                    <RightMain />
+                  </div>
                 </div>
               </div>
-            </RoomProvider>
-            <div className="flex-1 ml-64">
-              <div className="flex flex-col md:flex-row" style={{ height: `calc(100vh - 152px)` }}>
-                <div className="p-5 mt-[80px] w-full md:w-1/2 h-1/2 md:h-full overflow-y-auto">
-                  <LeftMain />
-                </div>
-                <div className="w-full md:w-1/2 h-1/2 md:h-full overflow-y-auto">
-                  <RightMain />
-                </div>
-              </div>
-            </div>
-          </LiveblocksProvider>
+            </LiveblocksProvider>
+          </EditorProvider>
         </MarkdownProvider>
       </MenuItemsProvider>
     </ActiveIdProvider>
