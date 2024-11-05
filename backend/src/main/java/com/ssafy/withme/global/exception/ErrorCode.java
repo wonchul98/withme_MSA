@@ -14,7 +14,8 @@ public enum ErrorCode {
     /**Repo*/
     REPO_NOT_FOUND(BAD_REQUEST, "REPO001", "해당 레파지토리가 존재하지 않습니다."),
 
-    WORKSPACE_NOT_FOUND(BAD_REQUEST, "WORK000", "해당하는 ID의 워크스페이스가 존재하지 않습니다.");
+    /**WorkSpace*/
+    WORKSPACE_NOT_FOUND(BAD_REQUEST,"WORK000", "해당하는 ID의 워크스페이스가 존재하지 않습니다.");
 
 
     private final HttpStatus status;
