@@ -59,4 +59,6 @@ public class Workspace extends BaseTimeEntity {
     public void changeIsCreated(Boolean isCreated) {
         this.isCreated = isCreated;
     }
+
+    public void changeName(String name) { this.name = name; }
 }

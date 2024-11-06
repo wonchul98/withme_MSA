@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import static com.ssafy.withme.global.consts.StaticConst.PAGEABLE_DEFAULT_SIZE;
 
@@ -40,8 +41,8 @@ public class WorkspaceController {
     }
 
     @GetMapping("/refresh")
-    public String refresh() {
-        return "refresh";
+    public Map<String, List<WorkspaceInfoResponse>> refresh() {
+        return workspaceService.refreshWorkspace();
     }
 
     @PostMapping("")
