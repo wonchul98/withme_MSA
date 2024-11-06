@@ -19,5 +19,7 @@ public interface WorkspaceService {
 
     IntegratedWorkspaceResponse makeInvisible(String repositoryUrl);
 
+    IntegratedWorkspaceResponse activeWorkspace(Long workspaceId);
+
     Map<String, List<WorkspaceInfoResponse>> refreshWorkspace();
 }

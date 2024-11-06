@@ -1,5 +1,6 @@
 package com.ssafy.withme.domain.workspace.service;
 
+import com.ssafy.withme.domain.member.dto.GitToken;
 import com.ssafy.withme.domain.member.repository.MemberRepository;
 import com.ssafy.withme.domain.repository.entity.Repo;
 import com.ssafy.withme.domain.repository.repository.RepoRepository;
@@ -8,7 +9,6 @@ import com.ssafy.withme.domain.workspace.dto.Response.WorkspaceInfoResponse;
 import com.ssafy.withme.domain.workspace.entity.Workspace;
 import com.ssafy.withme.domain.workspace.repository.WorkspaceRepository;
 import com.ssafy.withme.global.exception.BusinessException;
-import com.ssafy.withme.global.exception.ErrorCode;
 import com.ssafy.withme.global.util.SecurityUtils;
 import com.ssafy.withme.global.openfeign.dto.response.refined.RefinedRepoDTO;
 import com.ssafy.withme.global.openfeign.service.APICallService;
@@ -20,11 +20,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.*;
-
 import java.time.LocalDateTime;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
+
 import static com.ssafy.withme.global.consts.StaticConst.*;
+import static com.ssafy.withme.global.exception.ErrorCode.*;
 import static org.springframework.data.domain.Sort.Direction.*;
 
 @Service
@@ -49,19 +51,22 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         return changeVisibility(repositoryUrl, false);
     }
 
-    private IntegratedWorkspaceResponse changeVisibility(String repositoryUrl, boolean isVisible) {
+    @Override
+    public IntegratedWorkspaceResponse activeWorkspace(Long workspaceId) {
+        // 권한 및 유효성 검사
         Long memberId = securityUtils.getMemberId();
-        Repo repository = repoRepository.findByMember_IdAndWorkspace_RepoUrl(memberId, repositoryUrl)
-                .orElseThrow(() -> new BusinessException(ErrorCode.REPO_NOT_FOUND));
-        repository.changeIsVisible(isVisible);
+        Workspace workspace = workspaceRepository.findById(workspaceId).orElseThrow(()->new BusinessException(WORKSPACE_NOT_FOUND));
+        repoRepository.findByMember_IdAndWorkspace_RepoUrl(memberId, workspace.getRepoUrl())
+                .orElseThrow(()->new BusinessException(REPO_NOT_ALLOWED));
 
-        entityManager.flush();
+        // 한번도 활성화가 안된 경우
+        if(!workspace.getIsCreated()) {
+            long randomId = Math.abs(UUID.randomUUID().getMostSignificantBits()); // TODO : 검증 매서드가 필요하려나
+            workspace.changeRoomId(randomId);
+            workspace.changeIsCreated(true);
+        }
 
-        // 변경 후의 워크스페이스 리스트 반환
-        Pageable pageable = PageRequest.of(PAGEABLE_DEFAULT_PAGE, PAGEABLE_DEFAULT_SIZE, Sort.by(DESC, "updatedAt"));
-        Slice<WorkspaceInfoResponse> visibleWorkspaces = getMyVisibleWorkspaces(pageable, LocalDateTime.now());
-        List<WorkspaceInfoResponse> invisibleWorkspaces = getMyInvisibleWorkspaces();
-        return IntegratedWorkspaceResponse.from(visibleWorkspaces, invisibleWorkspaces);
+        return changeVisibility(workspace.getRepoUrl(), true);
     }
 
     @Override
@@ -80,13 +85,28 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                 .map(repository -> WorkspaceInfoResponse.from(repository.getWorkspace()))
                 .toList();
     }
+    // 현재 로그인 한 유저의 repo를 url기반으로 찾고 visible을 수정한 뒤 그 결과를 반환
+    private IntegratedWorkspaceResponse changeVisibility(String repositoryUrl, boolean isVisible) {
+        Long memberId = securityUtils.getMemberId();
+        Repo repository = repoRepository.findByMember_IdAndWorkspace_RepoUrl(memberId, repositoryUrl)
+                .orElseThrow(() -> new BusinessException(REPO_NOT_FOUND));
+        repository.changeIsVisible(isVisible);
+
+        entityManager.flush();
+
+        // 변경 후의 워크스페이스 리스트 반환
+        Pageable pageable = PageRequest.of(PAGEABLE_DEFAULT_PAGE, PAGEABLE_DEFAULT_SIZE, Sort.by(DESC, "updatedAt"));
+        Slice<WorkspaceInfoResponse> visibleWorkspaces = getMyVisibleWorkspaces(pageable, LocalDateTime.now());
+        List<WorkspaceInfoResponse> invisibleWorkspaces = getMyInvisibleWorkspaces();
+        return IntegratedWorkspaceResponse.from(visibleWorkspaces, invisibleWorkspaces);
+    }
 
 
     // workspace : 공통, repo : 개인
     @Override
     public Map<String, List<WorkspaceInfoResponse>> refreshWorkspace() {
         Long memberId = securityUtils.getMemberId();
-        String memberToken = securityUtils.getGitToken().getTokenValue();
+        GitToken memberToken = securityUtils.getGitToken();
 
         List<Repo> existingRepos = repoRepository.findAllByMember_Id(memberId);
         List<RefinedRepoDTO> refinedRepos = apiCallService.GetAuthenticatedUserRepos(memberToken);
@@ -125,7 +145,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                     newWorkspace = new Workspace(refinedRepo.name(), refinedRepoUrl, null);
                 }
                 Repo newRepo = new Repo(
-                        memberRepository.findById(memberId).orElseThrow(() -> new BusinessException(ErrorCode.INVALID_ID_TOKEN)),
+                        memberRepository.findById(memberId).orElseThrow(() -> new BusinessException(INVALID_ID_TOKEN)),
                         newWorkspace
                 );
                 workspaceRepository.save(newWorkspace);
@@ -158,5 +178,4 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         resultMap.put("invisible", invisibleWorkspaces);
         return resultMap;
     }
-
 }
