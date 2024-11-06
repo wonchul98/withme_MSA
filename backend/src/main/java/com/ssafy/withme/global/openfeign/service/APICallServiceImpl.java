@@ -1,5 +1,7 @@
 package com.ssafy.withme.global.openfeign.service;
 
+import com.ssafy.withme.domain.member.dto.GitToken;
+import com.ssafy.withme.domain.member.entity.Provider;
 import com.ssafy.withme.global.openfeign.FeignGithubAPIClient;
 import com.ssafy.withme.global.openfeign.dto.response.DetailResponseDTO;
 import com.ssafy.withme.global.openfeign.dto.response.RepoResponseDTO;
@@ -25,22 +27,46 @@ public class APICallServiceImpl implements APICallService {
     private final FeignGithubAPIClient feignGithubAPIClient;
 
     @Override
-    public UserResponseDTO GetAuthenticatedUser(String userToken){
-        return feignGithubAPIClient.GetAuthenticatedUser(userToken);
+    public UserResponseDTO GetAuthenticatedUser(GitToken gitToken){
+        if(gitToken == null) return null;
+
+        if(gitToken.getProvider().equals(Provider.GITHUB)){
+            return feignGithubAPIClient.GetAuthenticatedUser("Bearer " + gitToken.getTokenValue());
+        }else{
+            // TODO : 깃랩 API 코드 작성
+            return null;
+        }
     }
 
     @Override
-    public List<RefinedRepoDTO> GetAuthenticatedUserRepos(String userToken){
-        List<RepoResponseDTO> RepoResponseDTOs = feignGithubAPIClient.GetAuthenticatedUserRepos(userToken);
+    public List<RefinedRepoDTO> GetAuthenticatedUserRepos(GitToken gitToken){
+        if(gitToken == null) return null;
 
-        return RepoResponseDTOs.stream().map(RefinedRepoDTO::new).toList();
+        if(gitToken.getProvider().equals(Provider.GITHUB)){
+            List<RepoResponseDTO> RepoResponseDTOs = feignGithubAPIClient.GetAuthenticatedUserRepos("Bearer " + gitToken.getTokenValue());
+
+            return RepoResponseDTOs.stream().map(RefinedRepoDTO::new).toList();
+        }else{
+            // TODO : 깃랩 API 코드 작성
+            return null;
+        }
     }
 
     @Override
-    public List<RefinedRepoDetailDTO> getRepoDetails(String userToken, String owner, String repo, String path) {
-        return getRepoDetailsAsync(userToken, owner, repo, path)
-                .thenApply(details -> details.stream().map(RefinedRepoDetailDTO::new).toList())
-                .join();
+    public List<RefinedRepoDetailDTO> getRepoDetails(GitToken gitToken, String owner, String repo, String path) {
+        if(gitToken == null) return null;
+
+        if(gitToken.getProvider().equals(Provider.GITHUB)){
+            return getRepoDetailsAsync("Bearer " + gitToken.getTokenValue(), owner, repo, path)
+                    .thenApply(details -> details.stream().map(RefinedRepoDetailDTO::new).toList())
+                    .join();
+        }else{
+            // TODO : 깃랩 API 코드 작성
+            return null;
+        }
+
+
+
     }
 
     @Async

@@ -1,6 +1,7 @@
 package com.ssafy.withme.domain.workspace.dto.Response;
 
 
+import com.ssafy.withme.domain.repository.entity.Repo;
 import com.ssafy.withme.domain.workspace.entity.Workspace;
 import lombok.Builder;
 
@@ -30,6 +31,18 @@ public record WorkspaceInfoResponse (
                 .readmeContent(workspace.getReadmeContent())
                 .isPrivate(workspace.getIsPrivate())
                 .roomId(WORKSPACE_ROOM_ID_PREFIX + workspace.getRoomId())
+                .build();
+    }
+
+    public static WorkspaceInfoResponse from(Repo repo) {
+        return WorkspaceInfoResponse.builder()
+                .id(repo.getWorkspace().getId())
+                .name(repo.getWorkspace().getName())
+                .thumbnail(repo.getWorkspace().getThumbnail())
+                .repoUrl(repo.getWorkspace().getRepoUrl())
+                .isCreated(repo.getWorkspace().getIsCreated())
+                .readmeContent(repo.getWorkspace().getReadmeContent())
+                .isPrivate(repo.getWorkspace().getIsPrivate())
                 .build();
     }
 }

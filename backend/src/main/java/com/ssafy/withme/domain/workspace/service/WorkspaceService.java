@@ -7,6 +7,7 @@ import org.springframework.data.domain.Slice;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 public interface WorkspaceService {
 
@@ -19,4 +20,6 @@ public interface WorkspaceService {
     IntegratedWorkspaceResponse makeInvisible(String repositoryUrl);
 
     IntegratedWorkspaceResponse activeWorkspace(Long workspaceId);
+
+    Map<String, List<WorkspaceInfoResponse>> refreshWorkspace();
 }
