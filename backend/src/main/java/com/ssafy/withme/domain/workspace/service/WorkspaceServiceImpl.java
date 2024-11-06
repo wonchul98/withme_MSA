@@ -6,6 +6,7 @@ import com.ssafy.withme.domain.repository.repository.RepoRepository;
 import com.ssafy.withme.domain.workspace.dto.Response.IntegratedWorkspaceResponse;
 import com.ssafy.withme.domain.workspace.dto.Response.WorkspaceInfoResponse;
 import com.ssafy.withme.domain.workspace.entity.Workspace;
+import com.ssafy.withme.domain.workspace.repository.WorkspaceRepository;
 import com.ssafy.withme.global.exception.BusinessException;
 import com.ssafy.withme.global.exception.ErrorCode;
 import com.ssafy.withme.global.util.SecurityUtils;
@@ -37,6 +38,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private final SecurityUtils securityUtils;
     private final APICallService apiCallService;
     private final MemberRepository memberRepository;
+    private final WorkspaceRepository workspaceRepository;
 
     @Override
     public IntegratedWorkspaceResponse makeVisible(String repositoryUrl) {
@@ -80,6 +82,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                 .toList();
     }
 
+
+    // workspace : 공통, repo : 개인
     @Override
     public Map<String, List<WorkspaceInfoResponse>> refreshWorkspace() {
         Long memberId = securityUtils.getMemberId();
@@ -117,11 +121,15 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         for (RefinedRepoDTO refinedRepo : refinedRepos) {
             String refinedRepoUrl = refinedRepo.htmlUrl();
             if (!existingRepoUrls.contains(refinedRepoUrl)) {
-                Workspace newWorkspace = new Workspace(refinedRepo.name(), refinedRepoUrl, null);
+                Workspace newWorkspace = workspaceRepository.findByRepoUrl(refinedRepoUrl);
+                if(newWorkspace == null) {
+                    newWorkspace = new Workspace(refinedRepo.name(), refinedRepoUrl, null);
+                }
                 Repo newRepo = new Repo(
                         memberRepository.findById(memberId).orElseThrow(() -> new BusinessException(ErrorCode.INVALID_ID_TOKEN)),
                         newWorkspace
                 );
+                workspaceRepository.save(newWorkspace);
                 repoRepository.save(newRepo);
             }
         }
