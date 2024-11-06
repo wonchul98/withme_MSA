@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import RQProvider from '../_components/RQProvider';
+
 type Props = { children: ReactNode; modal: ReactNode };
 export default function Layout({ children }: Props) {
   return (
@@ -821,7 +821,7 @@ body {
 
         `}
       </style>
-      <RQProvider>{children}</RQProvider>
+      {children}
     </div>
   );
 }
