@@ -81,21 +81,12 @@ public class ReadMeServiceImpl implements ReadMeService {
 
         ChatGptRequest chatGptRequest = ChatGptRequest.of(prompt);
         String requestValue = objectMapper.writeValueAsString(chatGptRequest);
-        System.out.println("JSON Payload to be sent: " + requestValue); // JSON 페이로드 확인
 
         return webClient.post()
                 .uri("/v1/chat/completions")
                 .bodyValue(requestValue)
                 .accept(MediaType.TEXT_EVENT_STREAM)
                 .retrieve()
-                .onStatus(HttpStatusCode::is4xxClientError, response -> {
-                    System.err.println("Client error: " + response.statusCode());
-                    return Mono.error(new RuntimeException("4xx Error - Client Side Issue"));
-                })
-                .onStatus(HttpStatusCode::is5xxServerError, response -> {
-                    System.err.println("Server error: " + response.statusCode());
-                    return Mono.error(new RuntimeException("5xx Error - Server Side Issue"));
-                })
                 .bodyToFlux(String.class)
                 .onErrorResume(error -> {
                     System.err.println("Error during GPT request: " + error.getMessage());
