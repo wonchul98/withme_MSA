@@ -10,6 +10,8 @@ import * as Y from 'yjs';
 import { LiveblocksYjsProvider } from '@liveblocks/yjs';
 import { useRoom } from '@liveblocks/react/suspense';
 import { useMarkdown } from '../_contexts/MarkdownContext';
+import { useEditor } from '../_contexts/EditorContext';
+import { useActiveId } from '../_contexts/ActiveIdContext';
 
 type EditorProps = {
   doc: Y.Doc;
@@ -43,6 +45,7 @@ export function Editor() {
 function BlockNote({ doc, provider }: EditorProps) {
   const room = useRoom();
   const { markdowns, setMarkdowns } = useMarkdown();
+  const { editorsRef } = useEditor();
   const id = room.id.slice(5);
 
   const onChange = async () => {
@@ -71,9 +74,23 @@ function BlockNote({ doc, provider }: EditorProps) {
     },
   });
 
+  useEffect(() => {
+    if (editorsRef.current) {
+      const updatedEditors = editorsRef.current.map((e) => {
+        if (e.id === id) {
+          return { ...e, editor };
+        }
+        return e;
+      });
+      editorsRef.current = updatedEditors;
+    }
+  }, [editor.document]);
+
+  const { activeId } = useActiveId();
+
   return (
     <div>
-      <BlockNoteView editor={editor} onChange={onChange} />
+      <BlockNoteView editor={editor} onChange={onChange} editable={activeId === id} />
     </div>
   );
 }

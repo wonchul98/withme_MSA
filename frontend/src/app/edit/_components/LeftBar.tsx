@@ -8,10 +8,12 @@ import { EditIcon } from '../_icons/EditIcon';
 import { DeleteIcon } from '../_icons/DeleteIcon';
 import { useActiveId } from '../_contexts/ActiveIdContext';
 import { useMenuItems } from '../_contexts/MenuItemsContext';
+import { useEditor } from '../_contexts/EditorContext';
 
 function LeftBarContent() {
   const { activeId, setActiveId } = useActiveId();
   const { initialItems, setInitialItems, menuItems, setMenuItems } = useMenuItems();
+  const { editorsRef, updateEditorsEditableState } = useEditor();
   const [draggedItem, setDraggedItem] = useState<MenuItem | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState<string>('');
@@ -29,6 +31,13 @@ function LeftBarContent() {
       setActiveId(menuItems[0].id);
     }
   }, [menuItems, activeId, setActiveId]);
+
+  const handleItemClick = (id: string) => {
+    if (editingId !== id) {
+      setActiveId(id);
+    }
+    updateEditorsEditableState(id);
+  };
 
   const addNewTab = useMutation(
     ({ storage }) => {
@@ -51,6 +60,7 @@ function LeftBarContent() {
       storage.set('menuItems', updatedMenuItems);
       setMenuItems(updatedMenuItems);
       setActiveId(newTab.id);
+      updateEditorsEditableState(newTab.id);
       setEditingId(newTab.id);
       setEditValue('');
     },
@@ -67,19 +77,26 @@ function LeftBarContent() {
   const deleteItem = useMutation(
     ({ storage }, id: string) => {
       const menuItems = storage.get('menuItems');
-
       if (menuItems.length <= 1) {
         return;
+      }
+
+      if (editorsRef.current) {
+        const targetEditor = editorsRef.current.find((item) => item.id === id)?.editor;
+        if (targetEditor) {
+          const allBlocks = targetEditor.document;
+          targetEditor.replaceBlocks(allBlocks, []);
+        }
       }
 
       const updatedMenuItems = menuItems.filter((item: MenuItem) => item.id !== id);
       storage.set('menuItems', updatedMenuItems);
       setMenuItems(updatedMenuItems);
-
       if (activeId === id) {
         const nextItem = updatedMenuItems[0];
         if (nextItem) {
           setActiveId(nextItem.id);
+          updateEditorsEditableState(nextItem.id);
         }
       }
     },
@@ -100,6 +117,7 @@ function LeftBarContent() {
   const handleEditClick = (e: React.MouseEvent, item: MenuItem) => {
     e.stopPropagation();
     setEditingId(item.id);
+
     setEditValue(item.label);
   };
 
@@ -145,7 +163,7 @@ function LeftBarContent() {
   if (!menuItems) return null;
 
   return (
-    <div className="h-full p-4 space-y-2">
+    <div className="h-full px-4 py-6 space-y-2">
       {menuItems.map((item: MenuItem) => (
         <div
           key={item.id}
@@ -161,7 +179,7 @@ function LeftBarContent() {
           className={`
             w-full px-4 py-3 rounded-lg
             transition-colors duration-200
-            text-sm font-medium
+            text-xl font-bold
             group
             ${editingId !== item.id ? 'cursor-grab active:cursor-grabbing' : ''}
             ${
@@ -171,7 +189,7 @@ function LeftBarContent() {
             }
             flex items-center justify-between
           `}
-          onClick={() => editingId !== item.id && setActiveId(item.id)}
+          onClick={() => handleItemClick(item.id)}
         >
           {editingId === item.id ? (
             <input
@@ -190,18 +208,18 @@ function LeftBarContent() {
               autoFocus
             />
           ) : (
-            <>
-              <span>{item.label}</span>
-              <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity gap-2">
-                <button onClick={(e) => handleEditClick(e, item)} className="hover:text-green-500">
-                  <EditIcon />
-                </button>
-                <button onClick={(e) => handleDeleteClick(e, item.id)} className="hover:text-red-500">
-                  <DeleteIcon />
-                </button>
-              </div>
-            </>
+            <span>{item.label}</span>
           )}
+          {
+            <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity gap-2">
+              <button onClick={(e) => handleEditClick(e, item)} className="hover:text-green-500">
+                <EditIcon />
+              </button>
+              <button onClick={(e) => handleDeleteClick(e, item.id)} className="hover:text-red-500">
+                <DeleteIcon />
+              </button>
+            </div>
+          }
         </div>
       ))}
 
@@ -229,10 +247,8 @@ export function LeftBar() {
   return (
     <ClientSideSuspense fallback={<div>Loading...</div>}>
       {() => (
-        <div className="flex">
-          <div className="bg-gray-900 w-64 border-r border-gray-800">
-            <LeftBarContent />
-          </div>
+        <div className="bg-gray-900 w-80 border-r h-full ">
+          <LeftBarContent />
         </div>
       )}
     </ClientSideSuspense>

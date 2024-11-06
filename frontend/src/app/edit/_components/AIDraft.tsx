@@ -68,7 +68,7 @@ export function AIDraft() {
   return (
     <div className="flex flex-col w-full h-full p-2">
       <div className="text-lg font-semibold mb-4">현재 목차: {activeLabel}</div>
-      <div className="flex-grow bg-gray-100 rounded-lg p-4 overflow-auto">
+      <div className="flex-grow rounded-lg p-4 overflow-auto">
         {messages.map((message, idx) => (
           <div key={idx} className={`mb-2 flex ${message.isUser ? 'justify-end' : 'justify-start'}`}>
             <div className={`p-2 rounded-lg ${message.isUser ? 'bg-gray-200' : 'bg-transparent'} max-w-[80%]`}>
@@ -78,16 +78,16 @@ export function AIDraft() {
         ))}
         {/* {isStreaming && <div className="p-2 text-left">...</div>} */}
       </div>
-      <div className="relative mt-4">
+      <div className="relative">
         <textarea
           value={promptValue}
           onChange={handleInputChange}
           onKeyDown={handleKeyPress}
           placeholder="메시지 ChatGPT"
-          className="w-full p-3 rounded-lg h-24 resize-none pr-20 focus:outline-none focus:border-none"
+          className="w-full p-3 bg-[#F4F4F4] rounded-lg h-24 resize-none pr-20 focus:outline-none focus:border-none"
         />
         <button onClick={handleSubmit} className="absolute bottom-2 right-2 pb-2 rounded-full " disabled={isStreaming}>
-          <FaArrowCircleUp size={32} />
+          <FaArrowCircleUp size={40} />
         </button>
       </div>
     </div>
