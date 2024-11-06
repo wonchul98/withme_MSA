@@ -6,7 +6,6 @@ import { useMenuItems } from '../_contexts/MenuItemsContext';
 
 type EditorContextType = {
   editorsRef: React.MutableRefObject<Editor[] | null>;
-  updateEditorsEditableState: (targetId: string) => void;
 };
 
 const EditorContext = createContext<EditorContextType | undefined>(undefined);
@@ -14,16 +13,6 @@ const EditorContext = createContext<EditorContextType | undefined>(undefined);
 export function EditorProvider({ children }: { children: React.ReactNode }) {
   const editorsRef = useRef<Editor[] | null>(null);
   const { menuItems } = useMenuItems();
-
-  const updateEditorsEditableState = (targetId: string) => {
-    if (editorsRef.current) {
-      editorsRef.current.forEach((item) => {
-        if (item.editor) {
-          item.editor.isEditable = item.id === targetId;
-        }
-      });
-    }
-  };
 
   useEffect(() => {
     if (editorsRef !== null) {
@@ -38,7 +27,6 @@ export function EditorProvider({ children }: { children: React.ReactNode }) {
     <EditorContext.Provider
       value={{
         editorsRef,
-        updateEditorsEditableState,
       }}
     >
       {children}

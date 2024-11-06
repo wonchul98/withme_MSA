@@ -13,7 +13,7 @@ import { useEditor } from '../_contexts/EditorContext';
 function LeftBarContent() {
   const { activeId, setActiveId } = useActiveId();
   const { initialItems, setInitialItems, menuItems, setMenuItems } = useMenuItems();
-  const { editorsRef, updateEditorsEditableState } = useEditor();
+  const { editorsRef } = useEditor();
   const [draggedItem, setDraggedItem] = useState<MenuItem | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState<string>('');
@@ -36,7 +36,6 @@ function LeftBarContent() {
     if (editingId !== id) {
       setActiveId(id);
     }
-    updateEditorsEditableState(id);
   };
 
   const addNewTab = useMutation(
@@ -60,7 +59,6 @@ function LeftBarContent() {
       storage.set('menuItems', updatedMenuItems);
       setMenuItems(updatedMenuItems);
       setActiveId(newTab.id);
-      updateEditorsEditableState(newTab.id);
       setEditingId(newTab.id);
       setEditValue('');
     },
@@ -96,7 +94,6 @@ function LeftBarContent() {
         const nextItem = updatedMenuItems[0];
         if (nextItem) {
           setActiveId(nextItem.id);
-          updateEditorsEditableState(nextItem.id);
         }
       }
     },
