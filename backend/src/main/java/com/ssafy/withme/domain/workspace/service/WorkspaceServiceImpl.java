@@ -82,8 +82,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     public Map<String, List<WorkspaceInfoResponse>> refreshWorkspace() {
-        Long memberId = 1L; // TODO: 실제 멤버 ID로 변경
-        String memberToken = "memberToken"; // TODO: 실제 멤버 토큰으로 변경
+        Long memberId = securityUtils.getMemberId();
+        String memberToken = securityUtils.getGitToken().getTokenValue();
 
         List<Repo> existingRepos = repoRepository.findAllByMember_Id(memberId);
         List<RefinedRepoDTO> refinedRepos = apiCallService.GetAuthenticatedUserRepos(memberToken);
