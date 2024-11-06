@@ -5,8 +5,13 @@ import '@/app/globals.css';
 import ViewIcon from './ViewIcon';
 import EditIcon from './EditIcon';
 import TrashIcon from './TrashIcon';
+import { WorkspaceContent } from '../model/workSpaceItem'; // 타입 파일 경로에 맞게 수정
 
-const UserWorkSpace: React.FC = () => {
+interface UserWorkSpaceProps {
+  workspace: WorkspaceContent; // WorkspaceContent 타입을 props로 받음
+}
+
+const UserWorkSpace: React.FC<UserWorkSpaceProps> = ({ workspace }) => {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -37,7 +42,7 @@ const UserWorkSpace: React.FC = () => {
       ) : (
         <Image
           className="workspace-image cursor-pointer"
-          src="/baseImage.png"
+          src={workspace.thumbnail}
           alt="Description of the image"
           width={200}
           height={300}
@@ -63,7 +68,7 @@ const UserWorkSpace: React.FC = () => {
           style={{ fontSize: '16px' }}
           className="text-[16px] font-bold overflow-hidden whitespace-nowrap text-ellipsis flex-1"
         >
-          여행지 추천 서비스 - TripMate
+          {workspace.name}
         </div>
 
         <div className="flex items-center justify-end">
