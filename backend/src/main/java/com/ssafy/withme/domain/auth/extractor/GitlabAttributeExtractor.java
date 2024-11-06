@@ -1,22 +1,16 @@
-package com.ssafy.withme.domain.auth;
+package com.ssafy.withme.domain.auth.extractor;
 
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import java.util.Map;
 
-import java.security.Principal;
+public class GitlabAttributeExtractor implements AttributeExtractor {
 
-public class GitlabAttributeExtractor implements ProviderAttributeExtractor {
     @Override
-    public String getUsername(OAuth2User oAuth2User) {
-        return "";
+    public String getUsername(Map<String, Object> attributes) {
+        return attributes.get("preferred_username").toString();
     }
 
     @Override
-    public String getUsername(Principal principal) {
-        return "";
-    }
-
-    @Override
-    public String getImageUrl(Principal principal) {
-        return "";
+    public String getImageUrl(Map<String, Object> attributes) {
+        return attributes.get("picture").toString();
     }
 }
