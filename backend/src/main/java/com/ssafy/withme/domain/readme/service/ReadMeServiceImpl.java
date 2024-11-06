@@ -138,7 +138,7 @@ public class ReadMeServiceImpl implements ReadMeService {
 //        );
         // TODO : 하드코딩 수정하기
         List<RefinedRepoDetailDTO> repoItems = apiCallService.getRepoDetails(
-                "eyJhbGciOiJIUzI1NiJ9.eyJ0b2tlbiI6Imdob19iY2xWZFVKdXhQWXExTUdINmFSZEwyZ0JxanFOZEUwS255d0EiLCJpZCI6IjEiLCJpYXQiOjE3MzA4NTU4NDcsImV4cCI6MTczMDg3MDI0N30.reiARTVhKO7WthDAjuHNfeJOsupsqVsx72d3u_DbDbQ",
+                "...",
                 "taegun1011",
                 "NAWA",
                 ""
