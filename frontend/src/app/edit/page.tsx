@@ -12,6 +12,7 @@ import { MarkdownProvider } from './_contexts/MarkdownContext';
 import RightMain from './_components/RightMain';
 import LeftMain from './_components/LeftMain';
 import { BiDotsVerticalRounded } from 'react-icons/bi';
+import FoldButton from './_components/FoldButton';
 
 const INITIAL_MENU_ITEMS = [
   { id: uuidv4(), label: 'Dashboard' },
@@ -31,7 +32,7 @@ const LEFT_SIDEBAR_WIDTH = 320;
 export default function EditPage() {
   const [leftSize, setLeftSize] = useState(50);
   const [isDragging, setIsDragging] = useState(false);
-  const [isVertical, setIsVertical] = useState(window.innerWidth < 768);
+  const [isVertical, setIsVertical] = useState(false);
   const mainContainerRef = useRef<HTMLDivElement | null>(null);
 
   const handleMouseDown = () => setIsDragging(true);
@@ -89,7 +90,7 @@ export default function EditPage() {
         <MarkdownProvider>
           <EditorProvider>
             <LiveblocksProvider authEndpoint="/api/liveblocks-auth">
-              <div className="flex flex-col bg-gray-700 h-full">
+              <div className="flex flex-col bg-white h-full">
                 <RoomProvider
                   id="sidebar-room-2"
                   initialStorage={{
@@ -101,6 +102,7 @@ export default function EditPage() {
                 </RoomProvider>
 
                 <div className="flex h-full">
+                  <FoldButton />
                   <RoomProvider
                     id="sidebar-room-2"
                     initialStorage={{
