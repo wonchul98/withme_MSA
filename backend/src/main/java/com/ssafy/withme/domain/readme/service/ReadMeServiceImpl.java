@@ -122,7 +122,7 @@ public class ReadMeServiceImpl implements ReadMeService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
 
         List<RefinedRepoDetailDTO> repoItems = apiCallService.getRepoDetails(
-                userToken.getTokenValue(),
+                userToken,
                 currentMember.getUsername(),
                 readMeDraftRequest.repositoryUrl(),
                 ""
