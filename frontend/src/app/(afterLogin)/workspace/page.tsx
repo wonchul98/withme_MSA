@@ -16,7 +16,6 @@ interface PageParam {
   cursor: string | null;
 }
 
-// 함수 정의
 export async function getPostWorkSpace({ pageParam = { page: 0, cursor: null } }: { pageParam?: PageParam }) {
   try {
     const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}${API_URL.WORKSPACE_O}`, {

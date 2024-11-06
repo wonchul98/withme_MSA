@@ -1,10 +1,12 @@
 'use client';
+import { useUserRepoQuery } from '@/stores/server/getUserRepoQuery';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 export default function Home() {
   const router = useRouter();
+  useUserRepoQuery();
 
   const handleCallback = async () => {
     const code = getQueryParams('code');
@@ -28,6 +30,7 @@ export default function Home() {
         // 응답 데이터를 쿠키에 저장
         const serializedData = JSON.stringify(response.data);
         document.cookie = `userData=${encodeURIComponent(serializedData)}; path=/;`; // 1시간 동안 유효
+
         router.push(`/workspace`);
       }
     } catch (error) {

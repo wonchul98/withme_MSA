@@ -1,14 +1,27 @@
 import RepoList from './RepoList';
+import { useState } from 'react';
 
 interface CreateProjectProps {
   onNextClick: (isClosed: boolean) => void;
 }
 
 export default function CreateProject({ onNextClick }: CreateProjectProps) {
+  const [searchText, setSearchText] = useState('');
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(event.target.value);
+  };
+
   return (
     <>
-      <input type="text" className="search-input" placeholder="Find a repository..." />
-      <RepoList />
+      <input
+        type="text"
+        className="search-input"
+        placeholder="Find a repository..."
+        value={searchText}
+        onChange={handleSearchChange}
+      />
+      <RepoList searchText={searchText} />
       <div className="w-full flex justify-center">
         <button className="create-button" onClick={() => onNextClick(true)}>
           Next
@@ -21,9 +34,6 @@ export default function CreateProject({ onNextClick }: CreateProjectProps) {
           margin: 10px 0;
           border: 1px solid #ccc;
           border-radius: 10px;
-        }
-        .ai-section {
-          margin-top: 20px;
         }
         .create-button {
           background-color: white;

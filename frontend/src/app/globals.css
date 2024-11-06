@@ -123,6 +123,7 @@ body {
 /* 스크롤바의 폭 너비 */
 .scrollbar::-webkit-scrollbar {
   width: 10px;
+  height: 10px;
   border-radius: 10px;
 }
 

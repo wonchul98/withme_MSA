@@ -5,4 +5,6 @@ export const PAGE_HEADER = {
 export const API_URL = {
     LOGIN: '/oauth2/authorization/github',
     WORKSPACE_O: '/api/workspace/visible',
+    WORKSPACE_X: '/api/workspace/invisible',
+    SYNC: '/api/workspace/refresh',
   };

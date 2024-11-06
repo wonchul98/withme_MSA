@@ -1,4 +1,9 @@
+'use client';
+
+import { useUserSyncQuery } from '@/stores/server/getUserSyncQuery';
+
 export default function SyncBtn() {
+  const { refetch } = useUserSyncQuery();
   return (
     <>
       <style>
@@ -32,7 +37,7 @@ export default function SyncBtn() {
               }
             `}
       </style>
-      <button className="repoBtn flex justifiy-center item-center">
+      <button className="repoBtn flex justifiy-center item-center" onClick={() => refetch}>
         <svg width="18" height="17" viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
             className="icon"

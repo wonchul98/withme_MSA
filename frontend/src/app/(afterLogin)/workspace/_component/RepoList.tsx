@@ -1,20 +1,29 @@
-// components/RepoList.js
 import React, { useState } from 'react';
 import RepoCheck from './RepoCheck';
+import { useUserRepoQuery } from '@/stores/server/getUserRepoQuery';
 
-const RepoList = () => {
-  const repos = ['WithMe', 'Semento', 'AltTab', 'Smartview', 'Potless', 'Tripeer', 'Moass', 'Devway'];
+interface RepoListProps {
+  searchText: string;
+}
+
+const RepoList = ({ searchText }: RepoListProps) => {
+  const { data } = useUserRepoQuery();
+  const repos = data?.data ?? [];
   const [selectedRepo, setSelectedRepo] = useState<number | null>(null);
 
   const handleClick = (index: number) => {
     setSelectedRepo(index === selectedRepo ? null : index);
   };
+
+  // 검색 필터링: name에 searchText가 포함된 항목만 보여줌
+  const filteredRepos = repos.filter((repo) => repo.name.toLowerCase().includes(searchText.toLowerCase()));
+
   return (
     <ul className="repo-list scrollbar">
-      {repos.map((repo, index) => (
+      {filteredRepos.map((repo, index) => (
         <li key={index} className="repo-item flex justify-start items-center" onClick={() => handleClick(index)}>
-          <div className="repo_check">{selectedRepo === index && <RepoCheck />}</div>
-          <div>{repo}</div>
+          <div className="repo_check flex-shrink-0">{selectedRepo === index && <RepoCheck />}</div>
+          <div className="flex-grow overflow-hidden text-ellipsis whitespace-nowrap">{repo.name}</div>
         </li>
       ))}
       <style jsx>{`
