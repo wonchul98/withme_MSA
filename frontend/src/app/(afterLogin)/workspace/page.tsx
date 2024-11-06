@@ -11,11 +11,22 @@ import axios from '@/util/axiosConfig';
 import { API_URL } from '@/util/constants';
 import WorkSpaceContainer from './_component/WorkSpaceContainer';
 
-export async function getPostWorkSpace() {
+interface PageParam {
+  page: number;
+  cursor: string | null;
+}
+
+// 함수 정의
+export async function getPostWorkSpace({ pageParam = { page: 0, cursor: null } }: { pageParam?: PageParam }) {
   try {
     const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}${API_URL.WORKSPACE_O}`, {
       headers: {
         'Cache-Control': 'no-store',
+      },
+      params: {
+        cursor: pageParam.cursor,
+        page: pageParam.page,
+        size: 10,
       },
     });
 
@@ -23,14 +34,17 @@ export async function getPostWorkSpace() {
       data: response.data,
     };
   } catch (error) {
-    // 에러 처리
     throw new Error('Failed to fetch data: ' + error);
   }
 }
 
 export default async function Home() {
   const queryClient: QueryClient = new QueryClient();
-  await queryClient.prefetchQuery({ queryKey: ['workspace'], queryFn: getPostWorkSpace });
+  await queryClient.prefetchInfiniteQuery({
+    queryKey: ['workspace'],
+    queryFn: ({ pageParam = { page: 0, cursor: null } }: { pageParam: PageParam }) => getPostWorkSpace({ pageParam }),
+    initialPageParam: { page: 0, cursor: null } as PageParam,
+  });
   const dehydratedState = dehydrate(queryClient);
 
   return (
