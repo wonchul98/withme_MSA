@@ -47,6 +47,7 @@ public class WorkspaceController {
 
     @PostMapping("")
     public IntegratedWorkspaceResponse makeVisible(@RequestParam String repository_url) {
+        
         return workspaceService.makeVisible(repository_url);
     }
 

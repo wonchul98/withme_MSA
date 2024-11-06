@@ -8,6 +8,7 @@ import com.ssafy.withme.domain.workspace.dto.Response.WorkspaceInfoResponse;
 import com.ssafy.withme.domain.workspace.entity.Workspace;
 import com.ssafy.withme.global.exception.BusinessException;
 import com.ssafy.withme.global.exception.ErrorCode;
+import com.ssafy.withme.global.util.SecurityUtils;
 import com.ssafy.withme.global.openfeign.dto.response.refined.RefinedRepoDTO;
 import com.ssafy.withme.global.openfeign.service.APICallService;
 import jakarta.persistence.EntityManager;
@@ -16,6 +17,8 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Security;
+import java.util.List;
 import java.util.*;
 
 import java.time.LocalDateTime;
@@ -31,6 +34,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     private final RepoRepository repoRepository;
     private final EntityManager entityManager;
+    private final SecurityUtils securityUtils;
     private final APICallService apiCallService;
     private final MemberRepository memberRepository;
 
@@ -45,7 +49,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     private IntegratedWorkspaceResponse changeVisibility(String repositoryUrl, boolean isVisible) {
-        Long memberId = 1L; // TODO : 실제 멤버 ID로 변경
+        Long memberId = securityUtils.getMemberId();
         Repo repository = repoRepository.findByMember_IdAndWorkspace_RepoUrl(memberId, repositoryUrl)
                 .orElseThrow(() -> new BusinessException(ErrorCode.REPO_NOT_FOUND));
         repository.changeIsVisible(isVisible);
@@ -61,7 +65,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     public Slice<WorkspaceInfoResponse> getMyVisibleWorkspaces(Pageable pageable, LocalDateTime cursor) {
-        Long memberId = 1L; // TODO: 실제 멤버 ID로 변경
+        Long memberId = securityUtils.getMemberId();
         if (cursor == null) cursor = LocalDateTime.now();
 
         return repoRepository.findAllByMember_IdAndIsVisibleTrueAndUpdatedAtBefore(memberId, cursor, pageable)
@@ -70,7 +74,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     public List<WorkspaceInfoResponse> getMyInvisibleWorkspaces() {
-        Long memberId = 1L; // TODO: 실제 멤버 ID로 변경
+        Long memberId = securityUtils.getMemberId();
         return repoRepository.findAllByMember_IdAndIsVisibleFalse(memberId).stream()
                 .map(repository -> WorkspaceInfoResponse.from(repository.getWorkspace()))
                 .toList();
