@@ -121,17 +121,10 @@ public class ReadMeServiceImpl implements ReadMeService {
         Member currentMember = memberRepository.findById(securityUtils.getMemberId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
 
-//        List<RefinedRepoDetailDTO> repoItems = apiCallService.getRepoDetails(
-//                userToken.getTokenValue(),
-//                currentMember.getUsername(),
-//                readMeDraftRequest.repositoryUrl(),
-//                ""
-//        );
-        // TODO : 하드코딩 수정하기
         List<RefinedRepoDetailDTO> repoItems = apiCallService.getRepoDetails(
-                "...",
-                "taegun1011",
-                "NAWA",
+                userToken.getTokenValue(),
+                currentMember.getUsername(),
+                readMeDraftRequest.repositoryUrl(),
                 ""
         );
         TreeNode root = apiCallService.buildTree(repoItems);
