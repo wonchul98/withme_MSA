@@ -1,8 +1,5 @@
 package com.ssafy.withme.domain.readme.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.ssafy.withme.global.config.ChatGptConfig;
-
 import java.util.List;
 import java.util.Map;
 

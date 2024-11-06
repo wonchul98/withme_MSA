@@ -9,7 +9,10 @@ import static org.springframework.http.HttpStatus.*;
 public enum ErrorCode {
 
     /**Auth*/
-    INVALID_ID_TOKEN(UNAUTHORIZED, "AUTH008", "ID 토큰 검증에 실패했습니다."),
+    INVALID_ID_TOKEN(UNAUTHORIZED, "AUTH001", "ID 토큰 검증에 실패했습니다."),
+
+    /**Member*/
+    MEMBER_NOT_FOUND(BAD_REQUEST, "MEM001", "유저를 찾을 수 없습니다. "),
 
     /**Repo*/
     REPO_NOT_FOUND(BAD_REQUEST, "REPO001", "해당 레파지토리가 존재하지 않습니다."),

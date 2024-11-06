@@ -42,15 +42,4 @@ public class ReadMeController {
             return Flux.error(e);
         }
     }
-
-
-//    @GetMapping(value = "/gpt-stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-//    public Flux<String> streamGptResponse(@RequestBody ReadMeDraftRequest readMeDraftRequest) {
-//        try{
-//            return readMeService.getGptResponse(readMeDraftRequest);
-//        }catch (JsonProcessingException je){
-//            return Flux.empty();
-//        }
-//    }
-
 }
