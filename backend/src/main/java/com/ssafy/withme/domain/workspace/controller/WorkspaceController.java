@@ -51,7 +51,12 @@ public class WorkspaceController {
     }
 
     @DeleteMapping("")
-    public IntegratedWorkspaceResponse deleteWorkspace(@RequestParam String repository_url) {
+    public IntegratedWorkspaceResponse makeInvisible(@RequestParam String repository_url) {
         return workspaceService.makeInvisible(repository_url);
+    }
+
+    @PostMapping("/active")
+    public IntegratedWorkspaceResponse activeWorkspace(@RequestParam Long workspace_id) {
+        return workspaceService.activeWorkspace(workspace_id);
     }
 }

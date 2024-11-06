@@ -17,4 +17,6 @@ public interface WorkspaceService {
     List<WorkspaceInfoResponse> getMyInvisibleWorkspaces();
 
     IntegratedWorkspaceResponse makeInvisible(String repositoryUrl);
+
+    IntegratedWorkspaceResponse activeWorkspace(Long workspaceId);
 }
