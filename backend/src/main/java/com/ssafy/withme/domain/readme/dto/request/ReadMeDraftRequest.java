@@ -1,9 +1,6 @@
 package com.ssafy.withme.domain.readme.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-
-import java.io.Serializable;
 
 public record ReadMeDraftRequest (
         @JsonProperty("repository_url")

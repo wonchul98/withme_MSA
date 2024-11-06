@@ -2,7 +2,6 @@ package com.ssafy.withme.global.common.response;
 
 import com.ssafy.withme.global.exception.ErrorCode;
 import lombok.Builder;
-import lombok.Getter;
 import org.springframework.lang.Nullable;
 
 import java.time.LocalDateTime;
