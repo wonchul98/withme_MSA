@@ -42,6 +42,17 @@ export function Editor() {
   return <BlockNote doc={doc} provider={provider} />;
 }
 
+async function uploadFile(file: File) {
+  const body = new FormData();
+  body.append('file', file);
+
+  const ret = await fetch('https://tmpfiles.org/api/v1/upload', {
+    method: 'POST',
+    body: body,
+  });
+  return (await ret.json()).data.url.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
+}
+
 function BlockNote({ doc, provider }: EditorProps) {
   const room = useRoom();
   const { markdowns, setMarkdowns } = useMarkdown();
@@ -72,6 +83,7 @@ function BlockNote({ doc, provider }: EditorProps) {
         color: '#ff0000',
       },
     },
+    uploadFile,
   });
 
   useEffect(() => {
