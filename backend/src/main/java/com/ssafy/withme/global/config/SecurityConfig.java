@@ -3,6 +3,7 @@ package com.ssafy.withme.global.config;
 import com.ssafy.withme.domain.auth.CustomAuthenticationSuccessHandler;
 import com.ssafy.withme.domain.auth.CustomOAuth2AuthorizationRequestRepository;
 import com.ssafy.withme.domain.auth.CustomOAuth2UserService;
+import com.ssafy.withme.domain.auth.CustomOidcUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -41,6 +42,7 @@ public class SecurityConfig {
 
     private final CustomAuthenticationSuccessHandler successHandler;
     private final CustomOAuth2UserService customUserService;
+    private final CustomOidcUserService customOidcUserService;
 
     @Bean
     @Order(1)
@@ -55,7 +57,8 @@ public class SecurityConfig {
                         .redirectionEndpoint(redirection -> redirection
                                 .baseUri("/login/oauth2/code/*"))
                         .userInfoEndpoint(userInfo -> userInfo
-                            .userService(customUserService))
+                            .userService(customUserService)
+                            .oidcUserService(customOidcUserService))
                         .successHandler(successHandler)
                 )
 
