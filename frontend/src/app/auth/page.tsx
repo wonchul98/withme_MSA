@@ -2,7 +2,6 @@
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import Image from 'next/image';
 
 export default function Home() {
   const router = useRouter();
