@@ -20,6 +20,4 @@ public interface ReadMeService {
     List<SearchReadMeResponseDTO> searchReadme(String keyword);
 
     Flux<String> makeReadMeDraft(ReadMeDraftRequest readMeDraftRequest) throws JsonProcessingException;
-
-    SseEmitter getGptResponse(String prompt);
 }

@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -42,15 +43,4 @@ public class ReadMeController {
             return Flux.error(e);
         }
     }
-
-
-//    @GetMapping(value = "/gpt-stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-//    public Flux<String> streamGptResponse(@RequestBody ReadMeDraftRequest readMeDraftRequest) {
-//        try{
-//            return readMeService.getGptResponse(readMeDraftRequest);
-//        }catch (JsonProcessingException je){
-//            return Flux.empty();
-//        }
-//    }
-
 }
