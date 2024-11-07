@@ -27,7 +27,6 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -37,7 +36,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReadMeServiceImpl implements ReadMeService {
 
-    private static final Logger log = LoggerFactory.getLogger(ReadMeServiceImpl.class);
     private final WorkspaceRepository workspaceRepository;
     private final WebClient webClient;
     private final SecurityUtils securityUtils;
@@ -76,12 +74,9 @@ public class ReadMeServiceImpl implements ReadMeService {
 
     @Override
     public Flux<String> makeReadMeDraft(ReadMeDraftRequest readMeDraftRequest) throws JsonProcessingException {
-        log.info("Make readme draft request: {}", readMeDraftRequest);
         String message = readMeDraftRequest.userPrompt();
         String repoTreeStructure = getRepoTree(readMeDraftRequest);
-        log.info("Making tree completed");
         String prompt = makePrompt(readMeDraftRequest.sectionName(), repoTreeStructure, message);
-        log.info("Making prompt completed");
         ChatGptRequest chatGptRequest = ChatGptRequest.of(prompt);
         String requestValue = objectMapper.writeValueAsString(chatGptRequest);
         return webClient.post()
@@ -89,11 +84,7 @@ public class ReadMeServiceImpl implements ReadMeService {
                 .bodyValue(requestValue)
                 .accept(MediaType.TEXT_EVENT_STREAM)
                 .retrieve()
-                .bodyToFlux(String.class)
-                .doOnNext(response -> log.info("Received response: {}", response)) // 응답 데이터 로그
-                .doOnError(error -> System.err.println("Error during GPT request: " + error.getMessage())) // 오류 발생 시 로그
-                .onErrorResume(error -> Flux.error(new RuntimeException("Failed to generate ReadMe draft.")));
-
+                .bodyToFlux(String.class);
     }
 
     private static String makePrompt(String sectionName, String repoTreeStructure, String message) {
