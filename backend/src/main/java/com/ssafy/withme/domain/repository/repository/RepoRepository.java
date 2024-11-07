@@ -19,7 +19,7 @@ public interface RepoRepository extends JpaRepository<Repo, Long> {
 
     List<Repo> findAllByMember_IdAndIsVisibleFalse(Long memberId);
 
-    Optional<Repo> findByMember_IdAndWorkspace_RepoUrl(Long memberId, String repoUrl);
-
     List<Repo> findAllByMember_Id(Long memberId);
+
+    Optional<Repo> findByMember_IdAndWorkspace_Id(Long memberId, Long workspaceId);
 }
