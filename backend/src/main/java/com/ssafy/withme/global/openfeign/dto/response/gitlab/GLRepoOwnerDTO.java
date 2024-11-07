@@ -1,6 +1,6 @@
-package com.ssafy.withme.global.openfeign.dto.response;
+package com.ssafy.withme.global.openfeign.dto.response.gitlab;
 
-public record RepoOwnerDTO(
+public record GLRepoOwnerDTO(
         String login,
         Integer id,
         String node_id,

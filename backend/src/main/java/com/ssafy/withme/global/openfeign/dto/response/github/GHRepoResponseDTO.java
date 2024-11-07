@@ -1,15 +1,15 @@
-package com.ssafy.withme.global.openfeign.dto.response;
+package com.ssafy.withme.global.openfeign.dto.response.github;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
 
-public record RepoResponseDTO (
+public record GHRepoResponseDTO(
         Integer id,
         String node_id,
         String name,
         String full_name,
-        RepoOwnerDTO owner,
+        GHRepoOwnerDTO owner,
         @JsonProperty("private") Boolean isPrivate,
         String html_url,
         String description,
@@ -77,7 +77,7 @@ public record RepoResponseDTO (
         String pushed_at,
         String created_at,
         String updated_at,
-        RepoPermissionsDTO permissions,
+        GHRepoPermissionsDTO permissions,
         Boolean allow_rebase_merge,
         String template_repository,
         String temp_clone_token,
@@ -87,7 +87,7 @@ public record RepoResponseDTO (
         Boolean allow_merge_commit,
         Integer subscribers_count,
         Integer network_count,
-        RepoLicenseDTO license,
+        GHRepoLicenseDTO license,
         Integer forks,
         Integer open_issues,
         Integer watchers

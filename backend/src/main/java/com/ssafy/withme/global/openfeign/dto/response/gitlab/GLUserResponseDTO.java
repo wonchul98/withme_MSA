@@ -1,6 +1,6 @@
-package com.ssafy.withme.global.openfeign.dto.response;
+package com.ssafy.withme.global.openfeign.dto.response.gitlab;
 
-public record UserResponseDTO(
+public record GLUserResponseDTO(
         String login,
         String id,
         String node_id,
@@ -39,6 +39,6 @@ public record UserResponseDTO(
         Integer disk_usage,
         Integer collaborators,
         Boolean two_factor_authentication,
-        UserResponsePlanDTO plan
+        GLUserResponsePlanDTO plan
 ) {
 }
