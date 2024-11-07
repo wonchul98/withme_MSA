@@ -42,22 +42,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private final WorkspaceRepository workspaceRepository;
 
     @Override
-    public IntegratedWorkspaceResponse makeVisible(String repositoryUrl) {
-        return changeVisibility(repositoryUrl, true);
-    }
-
-    @Override
-    public IntegratedWorkspaceResponse makeInvisible(String repositoryUrl) {
-        return changeVisibility(repositoryUrl, false);
-    }
-
-    @Override
-    public IntegratedWorkspaceResponse activeWorkspace(Long workspaceId) {
-        // 권한 및 유효성 검사
-        Long memberId = securityUtils.getMemberId();
+    public IntegratedWorkspaceResponse makeVisible(Long workspaceId) {
         Workspace workspace = workspaceRepository.findById(workspaceId).orElseThrow(()->new BusinessException(WORKSPACE_NOT_FOUND));
-        repoRepository.findByMember_IdAndWorkspace_RepoUrl(memberId, workspace.getRepoUrl())
-                .orElseThrow(()->new BusinessException(REPO_NOT_ALLOWED));
 
         // 한번도 활성화가 안된 경우
         if(!workspace.getIsCreated()) {
@@ -66,7 +52,12 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             workspace.changeIsCreated(true);
         }
 
-        return changeVisibility(workspace.getRepoUrl(), true);
+        return changeVisibility(workspace.getId(), true);
+    }
+
+    @Override
+    public IntegratedWorkspaceResponse makeInvisible(Long workspaceId) {
+        return changeVisibility(workspaceId, false);
     }
 
     @Override
@@ -85,10 +76,10 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                 .map(repository -> WorkspaceInfoResponse.from(repository.getWorkspace()))
                 .toList();
     }
-    // 현재 로그인 한 유저의 repo를 url기반으로 찾고 visible을 수정한 뒤 그 결과를 반환
-    private IntegratedWorkspaceResponse changeVisibility(String repositoryUrl, boolean isVisible) {
+    // 현재 로그인 한 유저의 repo를 찾고 visible을 수정한 뒤 그 결과를 반환
+    private IntegratedWorkspaceResponse changeVisibility(Long workspaceId, boolean isVisible) {
         Long memberId = securityUtils.getMemberId();
-        Repo repository = repoRepository.findByMember_IdAndWorkspace_RepoUrl(memberId, repositoryUrl)
+        Repo repository = repoRepository.findByMember_IdAndWorkspace_Id(memberId, workspaceId)
                 .orElseThrow(() -> new BusinessException(REPO_NOT_FOUND));
         repository.changeIsVisible(isVisible);
 

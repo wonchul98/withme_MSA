@@ -1,5 +1,6 @@
 package com.ssafy.withme.domain.workspace.controller;
 
+import com.ssafy.withme.domain.workspace.dto.Request.WorkspaceIdRequest;
 import com.ssafy.withme.domain.workspace.dto.Response.IntegratedWorkspaceResponse;
 import com.ssafy.withme.domain.workspace.dto.Response.WorkspaceInfoResponse;
 import com.ssafy.withme.domain.workspace.service.WorkspaceService;
@@ -46,18 +47,12 @@ public class WorkspaceController {
     }
 
     @PostMapping("")
-    public IntegratedWorkspaceResponse makeVisible(@RequestParam String repository_url) {
-        
-        return workspaceService.makeVisible(repository_url);
+    public IntegratedWorkspaceResponse makeVisible(@RequestBody WorkspaceIdRequest workspaceIdRequest) {
+        return workspaceService.makeVisible(workspaceIdRequest.workspaceId());
     }
 
     @DeleteMapping("")
-    public IntegratedWorkspaceResponse makeInvisible(@RequestParam String repository_url) {
-        return workspaceService.makeInvisible(repository_url);
-    }
-
-    @PostMapping("/active")
-    public IntegratedWorkspaceResponse activeWorkspace(@RequestParam Long workspace_id) {
-        return workspaceService.activeWorkspace(workspace_id);
+    public IntegratedWorkspaceResponse makeInvisible(@RequestBody WorkspaceIdRequest workspaceIdRequest) {
+        return workspaceService.makeInvisible(workspaceIdRequest.workspaceId());
     }
 }
