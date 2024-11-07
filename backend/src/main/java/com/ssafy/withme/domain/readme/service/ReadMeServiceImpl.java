@@ -21,10 +21,14 @@ import com.ssafy.withme.global.openfeign.service.APICallService;
 import com.ssafy.withme.global.openfeign.service.APICallServiceImpl.TreeNode;
 import com.ssafy.withme.global.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
 import java.util.List;
 
 
@@ -33,6 +37,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReadMeServiceImpl implements ReadMeService {
 
+    private static final Logger log = LoggerFactory.getLogger(ReadMeServiceImpl.class);
     private final WorkspaceRepository workspaceRepository;
     private final WebClient webClient;
     private final SecurityUtils securityUtils;
@@ -71,24 +76,23 @@ public class ReadMeServiceImpl implements ReadMeService {
 
     @Override
     public Flux<String> makeReadMeDraft(ReadMeDraftRequest readMeDraftRequest) throws JsonProcessingException {
-
+        log.info("Make readme draft request: {}", readMeDraftRequest);
         String message = readMeDraftRequest.userPrompt();
         String repoTreeStructure = getRepoTree(readMeDraftRequest);
         String prompt = makePrompt(readMeDraftRequest.sectionName(), repoTreeStructure, message);
 
         ChatGptRequest chatGptRequest = ChatGptRequest.of(prompt);
         String requestValue = objectMapper.writeValueAsString(chatGptRequest);
-
         return webClient.post()
                 .uri("/v1/chat/completions")
                 .bodyValue(requestValue)
                 .accept(MediaType.TEXT_EVENT_STREAM)
                 .retrieve()
                 .bodyToFlux(String.class)
-                .onErrorResume(error -> {
-                    System.err.println("Error during GPT request: " + error.getMessage());
-                    return Flux.error(new RuntimeException("Failed to generate ReadMe draft."));
-                });
+                .doOnNext(response -> log.info("Received response: {}", response)) // 응답 데이터 로그
+                .doOnError(error -> System.err.println("Error during GPT request: " + error.getMessage())) // 오류 발생 시 로그
+                .onErrorResume(error -> Flux.error(new RuntimeException("Failed to generate ReadMe draft.")));
+
     }
 
     private static String makePrompt(String sectionName, String repoTreeStructure, String message) {
