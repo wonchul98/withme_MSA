@@ -55,4 +55,9 @@ public class WorkspaceController {
     public IntegratedWorkspaceResponse makeInvisible(@RequestBody WorkspaceIdRequest workspaceIdRequest) {
         return workspaceService.makeInvisible(workspaceIdRequest.workspaceId());
     }
+
+    @GetMapping("/info")
+    public WorkspaceInfoResponse getWorkspaceInfo(@RequestBody WorkspaceIdRequest workspaceIdRequest) {
+        return workspaceService.getWorkspaceInfo(workspaceIdRequest.workspaceId());
+    }
 }

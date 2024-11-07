@@ -108,6 +108,14 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         return classifyWorkspacesByVisibility(memberId);
     }
 
+    @Override
+    public WorkspaceInfoResponse getWorkspaceInfo(Long workspaceId) {
+        Long memberId = securityUtils.getMemberId();
+        repoRepository.findByMember_IdAndWorkspace_Id(memberId, workspaceId).orElseThrow(()->new BusinessException(REPO_NOT_ALLOWED));
+        Workspace workspace = workspaceRepository.findById(workspaceId).orElseThrow(()->new BusinessException(WORKSPACE_NOT_FOUND));
+        return WorkspaceInfoResponse.from(workspace);
+    }
+
     // 기존 Repo 갱신
     private void updateExistingRepos(List<Repo> existingRepos, List<RefinedRepoDTO> refinedRepos) {
         Set<String> existingRepoUrls = extractRepoUrls(existingRepos);

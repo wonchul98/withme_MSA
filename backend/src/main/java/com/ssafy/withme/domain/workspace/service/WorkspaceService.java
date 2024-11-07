@@ -20,4 +20,6 @@ public interface WorkspaceService {
     List<WorkspaceInfoResponse> getMyInvisibleWorkspaces();
 
     Map<String, List<WorkspaceInfoResponse>> refreshWorkspace();
+
+    WorkspaceInfoResponse getWorkspaceInfo(Long workspaceId);
 }
