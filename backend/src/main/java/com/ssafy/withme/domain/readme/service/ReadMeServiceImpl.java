@@ -21,13 +21,10 @@ import com.ssafy.withme.global.openfeign.service.APICallService;
 import com.ssafy.withme.global.openfeign.service.APICallServiceImpl.TreeNode;
 import com.ssafy.withme.global.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
 import java.util.List;
 
 
@@ -97,8 +94,8 @@ public class ReadMeServiceImpl implements ReadMeService {
     private static String makePrompt(String sectionName, String repoTreeStructure, String message) {
 
         return String.format("""
-        Below is the file structure of a GitHub repository and a specific section where we want to generate the content for the README file.
-        Based on the file structure and section provided, please draft suitable content for that section.
+        The following is the file structure of a GitHub repository along with a specific section for which we want to generate README content.
+        Based on the provided structure and section, please draft suitable content in markdown format for the README file in Korean.
     
         Repository Structure:
         %s
@@ -109,7 +106,7 @@ public class ReadMeServiceImpl implements ReadMeService {
         - If the section is "Introduction", provide a summary of the repository based on the structure.
         - If the section is "Core Technologies", identify the main technologies used based on the filenames or directories.
         - If the section is "Features", list out potential features that might be inferred from the repository structure.
-        - Use a formal tone, and aim to provide content that could fit directly into a README file.
+        - Use a formal tone, aiming for content that can be directly included in a README file.
     
         Prompt:
         %s
@@ -128,8 +125,6 @@ public class ReadMeServiceImpl implements ReadMeService {
                 ""
         );
         TreeNode root = apiCallService.buildTree(repoItems);
-        String treeStructure = apiCallService.buildTreeString(root, "");
-        System.out.println(treeStructure);
-        return treeStructure;
+        return apiCallService.buildTreeString(root, "");
     }
 }

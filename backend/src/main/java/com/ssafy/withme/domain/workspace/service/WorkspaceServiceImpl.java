@@ -26,11 +26,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.*;
-
 import java.time.LocalDateTime;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
+
 import static com.ssafy.withme.global.consts.StaticConst.*;
+import static com.ssafy.withme.global.exception.ErrorCode.*;
 import static org.springframework.data.domain.Sort.Direction.*;
 
 @Service
@@ -48,28 +50,22 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private final Tika tika = new Tika();
 
     @Override
-    public IntegratedWorkspaceResponse makeVisible(String repositoryUrl) {
-        return changeVisibility(repositoryUrl, true);
+    public IntegratedWorkspaceResponse makeVisible(Long workspaceId) {
+        Workspace workspace = workspaceRepository.findById(workspaceId).orElseThrow(()->new BusinessException(WORKSPACE_NOT_FOUND));
+
+        // 한번도 활성화가 안된 경우
+        if(!workspace.getIsCreated()) {
+            long randomId = Math.abs(UUID.randomUUID().getMostSignificantBits()); // TODO : 검증 매서드가 필요하려나
+            workspace.changeRoomId(randomId);
+            workspace.changeIsCreated(true);
+        }
+
+        return changeVisibility(workspace.getId(), true);
     }
 
     @Override
-    public IntegratedWorkspaceResponse makeInvisible(String repositoryUrl) {
-        return changeVisibility(repositoryUrl, false);
-    }
-
-    private IntegratedWorkspaceResponse changeVisibility(String repositoryUrl, boolean isVisible) {
-        Long memberId = securityUtils.getMemberId();
-        Repo repository = repoRepository.findByMember_IdAndWorkspace_RepoUrl(memberId, repositoryUrl)
-                .orElseThrow(() -> new BusinessException(ErrorCode.REPO_NOT_FOUND));
-        repository.changeIsVisible(isVisible);
-
-        entityManager.flush();
-
-        // 변경 후의 워크스페이스 리스트 반환
-        Pageable pageable = PageRequest.of(PAGEABLE_DEFAULT_PAGE, PAGEABLE_DEFAULT_SIZE, Sort.by(DESC, "updatedAt"));
-        Slice<WorkspaceInfoResponse> visibleWorkspaces = getMyVisibleWorkspaces(pageable, LocalDateTime.now());
-        List<WorkspaceInfoResponse> invisibleWorkspaces = getMyInvisibleWorkspaces();
-        return IntegratedWorkspaceResponse.from(visibleWorkspaces, invisibleWorkspaces);
+    public IntegratedWorkspaceResponse makeInvisible(Long workspaceId) {
+        return changeVisibility(workspaceId, false);
     }
 
     @Override
@@ -87,6 +83,21 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         return repoRepository.findAllByMember_IdAndIsVisibleFalse(memberId).stream()
                 .map(repository -> WorkspaceInfoResponse.from(repository.getWorkspace()))
                 .toList();
+    }
+    // 현재 로그인 한 유저의 repo를 찾고 visible을 수정한 뒤 그 결과를 반환
+    private IntegratedWorkspaceResponse changeVisibility(Long workspaceId, boolean isVisible) {
+        Long memberId = securityUtils.getMemberId();
+        Repo repository = repoRepository.findByMember_IdAndWorkspace_Id(memberId, workspaceId)
+                .orElseThrow(() -> new BusinessException(REPO_NOT_FOUND));
+        repository.changeIsVisible(isVisible);
+
+        entityManager.flush();
+
+        // 변경 후의 워크스페이스 리스트 반환
+        Pageable pageable = PageRequest.of(PAGEABLE_DEFAULT_PAGE, PAGEABLE_DEFAULT_SIZE, Sort.by(DESC, "updatedAt"));
+        Slice<WorkspaceInfoResponse> visibleWorkspaces = getMyVisibleWorkspaces(pageable, LocalDateTime.now());
+        List<WorkspaceInfoResponse> invisibleWorkspaces = getMyInvisibleWorkspaces();
+        return IntegratedWorkspaceResponse.from(visibleWorkspaces, invisibleWorkspaces);
     }
 
 
@@ -133,7 +144,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
                     newWorkspace = new Workspace(refinedRepo.name(), refinedRepoUrl, null);
                 }
                 Repo newRepo = new Repo(
-                        memberRepository.findById(memberId).orElseThrow(() -> new BusinessException(ErrorCode.INVALID_ID_TOKEN)),
+                        memberRepository.findById(memberId).orElseThrow(() -> new BusinessException(INVALID_ID_TOKEN)),
                         newWorkspace
                 );
                 workspaceRepository.save(newWorkspace);

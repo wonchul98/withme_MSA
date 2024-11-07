@@ -41,6 +41,9 @@ public class Workspace extends BaseTimeEntity {
     @Column(nullable = false, name = "is_deleted", columnDefinition = "boolean default false")
     private Boolean isDeleted = false;
 
+    @Column(name = "room_id")
+    private Long roomId;
+
     @Builder
     public Workspace(String name, String repoUrl, String thumbnail) {
         this.name = name;
@@ -59,6 +62,8 @@ public class Workspace extends BaseTimeEntity {
     public void changeIsCreated(Boolean isCreated) {
         this.isCreated = isCreated;
     }
+
+    public void changeRoomId(Long roomId) { this.roomId = roomId; }
 
     public void changeName(String name) { this.name = name; }
 
