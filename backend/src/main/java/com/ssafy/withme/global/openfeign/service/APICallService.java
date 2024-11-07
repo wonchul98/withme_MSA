@@ -1,14 +1,14 @@
 package com.ssafy.withme.global.openfeign.service;
 
 import com.ssafy.withme.domain.member.dto.GitToken;
-import com.ssafy.withme.global.openfeign.dto.response.UserResponseDTO;
 import com.ssafy.withme.global.openfeign.dto.response.refined.RefinedRepoDTO;
 import com.ssafy.withme.global.openfeign.dto.response.refined.RefinedRepoDetailDTO;
+import com.ssafy.withme.global.openfeign.dto.response.refined.RefinedUserDTO;
 
 import java.util.List;
 
 public interface APICallService {
-    UserResponseDTO GetAuthenticatedUser(GitToken gitToken);
+    RefinedUserDTO GetAuthenticatedUser(GitToken gitToken);
 
     List<RefinedRepoDTO> GetAuthenticatedUserRepos(GitToken gitToken);
 
