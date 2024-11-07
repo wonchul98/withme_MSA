@@ -4,6 +4,7 @@ import com.ssafy.withme.domain.workspace.dto.Response.IntegratedWorkspaceRespons
 import com.ssafy.withme.domain.workspace.dto.Response.WorkspaceInfoResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,4 +21,6 @@ public interface WorkspaceService {
     List<WorkspaceInfoResponse> getMyInvisibleWorkspaces();
 
     Map<String, List<WorkspaceInfoResponse>> refreshWorkspace();
+
+    String uploadThumbnail(MultipartFile file, String repositoryUrl);
 }

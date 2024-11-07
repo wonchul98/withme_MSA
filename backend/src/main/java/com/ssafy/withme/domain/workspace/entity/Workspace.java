@@ -66,4 +66,6 @@ public class Workspace extends BaseTimeEntity {
     public void changeRoomId(Long roomId) { this.roomId = roomId; }
 
     public void changeName(String name) { this.name = name; }
+
+    public void changeThumbnail(String thumbnail) { this.thumbnail = thumbnail; }
 }

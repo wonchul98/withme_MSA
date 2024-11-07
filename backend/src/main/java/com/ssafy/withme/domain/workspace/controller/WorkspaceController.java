@@ -9,7 +9,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -55,4 +57,10 @@ public class WorkspaceController {
     public IntegratedWorkspaceResponse makeInvisible(@RequestBody WorkspaceIdRequest workspaceIdRequest) {
         return workspaceService.makeInvisible(workspaceIdRequest.workspaceId());
     }
+
+    @PostMapping(path = "/thumbnail", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public String uploadThumbnail(@RequestParam MultipartFile image, @RequestParam String repository_url) {
+        return workspaceService.uploadThumbnail(image, repository_url);
+    }
+
 }
