@@ -11,15 +11,13 @@ import java.util.Map;
 
 public interface WorkspaceService {
 
-    IntegratedWorkspaceResponse makeVisible(String repositoryUrl);
+    IntegratedWorkspaceResponse makeVisible(Long workspaceId);
+
+    IntegratedWorkspaceResponse makeInvisible(Long workspaceId);
 
     Slice<WorkspaceInfoResponse> getMyVisibleWorkspaces(Pageable pageable, LocalDateTime cursor);
 
     List<WorkspaceInfoResponse> getMyInvisibleWorkspaces();
-
-    IntegratedWorkspaceResponse makeInvisible(String repositoryUrl);
-
-    IntegratedWorkspaceResponse activeWorkspace(Long workspaceId);
 
     Map<String, List<WorkspaceInfoResponse>> refreshWorkspace();
 }
