@@ -1,8 +1,5 @@
 package com.ssafy.withme.global.openfeign.dto.response.gitlab;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public record GLRepoResponseDTO(
