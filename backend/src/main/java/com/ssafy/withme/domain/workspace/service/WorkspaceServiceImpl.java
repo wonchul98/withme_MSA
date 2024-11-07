@@ -1,5 +1,6 @@
 package com.ssafy.withme.domain.workspace.service;
 
+import com.ssafy.withme.domain.member.dto.GitToken;
 import com.ssafy.withme.domain.member.repository.MemberRepository;
 import com.ssafy.withme.domain.repository.entity.Repo;
 import com.ssafy.withme.domain.repository.repository.RepoRepository;
@@ -9,15 +10,20 @@ import com.ssafy.withme.domain.workspace.entity.Workspace;
 import com.ssafy.withme.domain.workspace.repository.WorkspaceRepository;
 import com.ssafy.withme.global.exception.BusinessException;
 import com.ssafy.withme.global.exception.ErrorCode;
+import com.ssafy.withme.global.s3.service.S3Service;
 import com.ssafy.withme.global.util.SecurityUtils;
 import com.ssafy.withme.global.openfeign.dto.response.refined.RefinedRepoDTO;
 import com.ssafy.withme.global.openfeign.service.APICallService;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import org.apache.tika.Tika;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.*;
 
@@ -38,6 +44,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private final APICallService apiCallService;
     private final MemberRepository memberRepository;
     private final WorkspaceRepository workspaceRepository;
+    private final S3Service s3Service;
+    private final Tika tika = new Tika();
 
     @Override
     public IntegratedWorkspaceResponse makeVisible(String repositoryUrl) {
@@ -86,7 +94,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Override
     public Map<String, List<WorkspaceInfoResponse>> refreshWorkspace() {
         Long memberId = securityUtils.getMemberId();
-        String memberToken = securityUtils.getGitToken().getTokenValue();
+        GitToken memberToken = securityUtils.getGitToken();
 
         List<Repo> existingRepos = repoRepository.findAllByMember_Id(memberId);
         List<RefinedRepoDTO> refinedRepos = apiCallService.GetAuthenticatedUserRepos(memberToken);
@@ -159,4 +167,20 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         return resultMap;
     }
 
+    @Override
+    public String uploadThumbnail(MultipartFile file, String repositoryUrl){
+        try {
+            InputStream imageStream = file.getInputStream();
+            String imageName = file.getOriginalFilename();
+            InputStream tmp = file.getInputStream();
+            String imgMimeType = tika.detect(tmp);
+            String fileUrl = s3Service.getFileUrl(s3Service.uploadFile(imageStream, imageName, "img", imgMimeType));
+            Repo repo = repoRepository.findByMember_IdAndWorkspace_RepoUrl(securityUtils.getMemberId(), repositoryUrl).orElseThrow(()->new BusinessException(ErrorCode.REPO_NOT_FOUND));
+            repo.getWorkspace().changeThumbnail(fileUrl);
+            repoRepository.save(repo);
+            return fileUrl;
+        }catch (IOException exception){
+            throw new BusinessException(ErrorCode.IMAGE_UPLOAD_FAILED);
+        }
+    }
 }

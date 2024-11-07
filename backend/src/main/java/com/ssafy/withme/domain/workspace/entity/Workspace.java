@@ -61,4 +61,6 @@ public class Workspace extends BaseTimeEntity {
     }
 
     public void changeName(String name) { this.name = name; }
+
+    public void changeThumbnail(String thumbnail) { this.thumbnail = thumbnail; }
 }
