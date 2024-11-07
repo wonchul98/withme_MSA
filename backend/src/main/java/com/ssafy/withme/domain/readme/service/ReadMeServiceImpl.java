@@ -79,8 +79,9 @@ public class ReadMeServiceImpl implements ReadMeService {
         log.info("Make readme draft request: {}", readMeDraftRequest);
         String message = readMeDraftRequest.userPrompt();
         String repoTreeStructure = getRepoTree(readMeDraftRequest);
+        log.info("Making tree completed");
         String prompt = makePrompt(readMeDraftRequest.sectionName(), repoTreeStructure, message);
-
+        log.info("Making prompt completed");
         ChatGptRequest chatGptRequest = ChatGptRequest.of(prompt);
         String requestValue = objectMapper.writeValueAsString(chatGptRequest);
         return webClient.post()
