@@ -21,9 +21,9 @@ public record RefinedRepoDTO(
 
     public RefinedRepoDTO(GLRepoResponseDTO responseDTO) {
         this(
-                responseDTO.name(),
-                responseDTO.full_name(),
-                responseDTO.html_url(),
+                responseDTO.path(),
+                responseDTO.path_with_namespace(),
+                responseDTO.web_url(),
                 responseDTO.description()
         );
     }
