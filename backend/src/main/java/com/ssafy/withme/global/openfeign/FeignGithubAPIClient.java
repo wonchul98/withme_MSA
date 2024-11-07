@@ -1,8 +1,11 @@
 package com.ssafy.withme.global.openfeign;
 
-import com.ssafy.withme.global.openfeign.dto.response.DetailResponseDTO;
-import com.ssafy.withme.global.openfeign.dto.response.RepoResponseDTO;
-import com.ssafy.withme.global.openfeign.dto.response.UserResponseDTO;
+import com.ssafy.withme.global.openfeign.dto.response.github.GHDetailResponseDTO;
+import com.ssafy.withme.global.openfeign.dto.response.github.GHRepoResponseDTO;
+import com.ssafy.withme.global.openfeign.dto.response.github.GHUserResponseDTO;
+import com.ssafy.withme.global.openfeign.dto.response.gitlab.GLDetailResponseDTO;
+import com.ssafy.withme.global.openfeign.dto.response.gitlab.GLRepoResponseDTO;
+import com.ssafy.withme.global.openfeign.dto.response.gitlab.GLUserResponseDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,11 +17,11 @@ import java.util.List;
 public interface FeignGithubAPIClient {
 
     @GetMapping("/user")
-    UserResponseDTO GetAuthenticatedUser(@RequestHeader("Authorization") String userToken);
+    GHUserResponseDTO GetAuthenticatedUser(@RequestHeader("Authorization") String userToken);
 
     @GetMapping("/user/repos")
-    List<RepoResponseDTO> GetAuthenticatedUserRepos(@RequestHeader("Authorization") String userToken);
+    List<GHRepoResponseDTO> GetAuthenticatedUserRepos(@RequestHeader("Authorization") String userToken);
 
     @GetMapping("/repos/{owner}/{repo}/contents/{path}")
-    List<DetailResponseDTO> GetRepoDetails(@RequestHeader("Authorization") String userToken, @PathVariable String owner, @PathVariable String repo, @PathVariable String path);
+    List<GHDetailResponseDTO> GetRepoDetails(@RequestHeader("Authorization") String userToken, @PathVariable String owner, @PathVariable String repo, @PathVariable String path);
 }
