@@ -22,5 +22,7 @@ public interface WorkspaceService {
 
     Map<String, List<WorkspaceInfoResponse>> refreshWorkspace();
 
+    WorkspaceInfoResponse getWorkspaceInfo(Long workspaceId);
+
     String uploadThumbnail(MultipartFile file, String repositoryUrl);
 }

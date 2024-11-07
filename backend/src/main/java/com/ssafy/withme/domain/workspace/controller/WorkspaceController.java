@@ -58,9 +58,13 @@ public class WorkspaceController {
         return workspaceService.makeInvisible(workspaceIdRequest.workspaceId());
     }
 
+    @GetMapping("/info")
+    public WorkspaceInfoResponse getWorkspaceInfo(@RequestBody WorkspaceIdRequest workspaceIdRequest) {
+        return workspaceService.getWorkspaceInfo(workspaceIdRequest.workspaceId());
+    }
+
     @PostMapping(path = "/thumbnail", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public String uploadThumbnail(@RequestParam MultipartFile image, @RequestParam String repository_url) {
         return workspaceService.uploadThumbnail(image, repository_url);
     }
-
 }
