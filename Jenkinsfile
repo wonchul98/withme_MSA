@@ -7,6 +7,9 @@ pipeline {
 
         frontChanged = true
         backChanged = true
+
+        myEndpoint = 'https://meeting.ssafy.com/hooks/b6gea4i7t3ytim3zei9atukfqy'
+        myChannel = '507jo'
     }
 
     stages {
@@ -106,6 +109,31 @@ pipeline {
                 failure {
                     echo 'Failed to generate docker image...'
                 }
+            }
+        }
+    }
+
+    post {
+        success {
+        	script {
+                def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+                def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+                mattermostSend (color: 'good', 
+                message: "${Author_ID}(${Author_Name})의 빌드 #${env.BUILD_NUMBER} 성공!!!", 
+                endpoint: myEndpoint, 
+                channel: myChannel
+                )
+            }
+        }
+        failure {
+        	script {
+                def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+                def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+                mattermostSend (color: 'danger', 
+                message: "${Author_ID}(${Author_Name})의 빌드 #${env.BUILD_NUMBER} 실패;;;",  
+                endpoint: myEndpoint, 
+                channel: myChannel
+                )
             }
         }
     }
