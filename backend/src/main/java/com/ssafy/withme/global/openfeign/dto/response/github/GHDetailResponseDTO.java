@@ -1,6 +1,6 @@
-package com.ssafy.withme.global.openfeign.dto.response;
+package com.ssafy.withme.global.openfeign.dto.response.github;
 
-public record DetailResponseDTO(
+public record GHDetailResponseDTO(
         String name,
         String path,
         String sha,
@@ -10,6 +10,6 @@ public record DetailResponseDTO(
         String git_url,
         String download_url,
         String type,
-        DetailLinkDTO _links
+        GHDetailLinkDTO _links
 ) {
 }

@@ -1,6 +1,6 @@
-package com.ssafy.withme.global.openfeign.dto.response;
+package com.ssafy.withme.global.openfeign.dto.response.github;
 
-public record RepoOwnerDTO(
+public record GHRepoOwnerDTO(
         String login,
         Integer id,
         String node_id,

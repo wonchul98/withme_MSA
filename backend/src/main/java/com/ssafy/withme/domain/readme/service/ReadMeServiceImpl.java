@@ -90,7 +90,7 @@ public class ReadMeServiceImpl implements ReadMeService {
     private static String makePrompt(String sectionName, String repoTreeStructure, String message) {
 
         return String.format("""
-        The following is the file structure of a GitHub repository along with a specific section for which we want to generate README content.
+        The following is the file structure of a Git Remote repository along with a specific section for which we want to generate README content.
         Based on the provided structure and section, please draft suitable content in markdown format for the README file in Korean.
     
         Repository Structure:

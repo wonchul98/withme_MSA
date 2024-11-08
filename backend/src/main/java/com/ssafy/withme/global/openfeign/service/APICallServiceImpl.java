@@ -3,14 +3,16 @@ package com.ssafy.withme.global.openfeign.service;
 import com.ssafy.withme.domain.member.dto.GitToken;
 import com.ssafy.withme.domain.member.entity.Provider;
 import com.ssafy.withme.global.openfeign.FeignGithubAPIClient;
-import com.ssafy.withme.global.openfeign.dto.response.DetailResponseDTO;
-import com.ssafy.withme.global.openfeign.dto.response.RepoResponseDTO;
-import com.ssafy.withme.global.openfeign.dto.response.UserResponseDTO;
+import com.ssafy.withme.global.openfeign.FeignGitlabAPIClient;
+import com.ssafy.withme.global.openfeign.dto.response.github.GHDetailResponseDTO;
+import com.ssafy.withme.global.openfeign.dto.response.github.GHRepoResponseDTO;
+import com.ssafy.withme.global.openfeign.dto.response.gitlab.GLDetailResponseDTO;
+import com.ssafy.withme.global.openfeign.dto.response.gitlab.GLRepoResponseDTO;
 import com.ssafy.withme.global.openfeign.dto.response.refined.RefinedRepoDTO;
 import com.ssafy.withme.global.openfeign.dto.response.refined.RefinedRepoDetailDTO;
+import com.ssafy.withme.global.openfeign.dto.response.refined.RefinedUserDTO;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -26,19 +28,23 @@ import java.util.stream.Collectors;
 public class APICallServiceImpl implements APICallService {
 
     private final FeignGithubAPIClient feignGithubAPIClient;
+    private final FeignGitlabAPIClient feignGitlabAPIClient;
     private final Set<String> visitedPaths = ConcurrentHashMap.newKeySet(); // 중복 요청 방지
     private final ExecutorService executorService = Executors.newFixedThreadPool(10); // 적절한 스레드 풀 설정
 
     @Override
-    public UserResponseDTO GetAuthenticatedUser(GitToken gitToken){
+    public RefinedUserDTO GetAuthenticatedUser(GitToken gitToken){
         if(gitToken == null) return null;
 
         if(gitToken.getProvider().equals(Provider.GITHUB)){
-            return feignGithubAPIClient.GetAuthenticatedUser("Bearer " + gitToken.getTokenValue());
+            return new RefinedUserDTO(feignGithubAPIClient.GetAuthenticatedUser(getBearerToken(gitToken)));
         }else{
-            // TODO : 깃랩 API 코드 작성
-            return null;
+            return new RefinedUserDTO(feignGitlabAPIClient.GetAuthenticatedUser(getBearerToken(gitToken)));
         }
+    }
+
+    private static String getBearerToken(GitToken gitToken) {
+        return "Bearer " + gitToken.getTokenValue();
     }
 
     @Override
@@ -46,12 +52,13 @@ public class APICallServiceImpl implements APICallService {
         if(gitToken == null) return null;
 
         if(gitToken.getProvider().equals(Provider.GITHUB)){
-            List<RepoResponseDTO> RepoResponseDTOs = feignGithubAPIClient.GetAuthenticatedUserRepos("Bearer " + gitToken.getTokenValue());
+            List<GHRepoResponseDTO> RepoResponseDTOs = feignGithubAPIClient.GetAuthenticatedUserRepos(getBearerToken(gitToken));
 
             return RepoResponseDTOs.stream().map(RefinedRepoDTO::new).toList();
         }else{
-            // TODO : 깃랩 API 코드 작성
-            return null;
+            List<GLRepoResponseDTO> RepoResponseDTOs = feignGitlabAPIClient.GetAuthenticatedUserRepos(getBearerToken(gitToken));
+
+            return RepoResponseDTOs.stream().map(RefinedRepoDTO::new).toList();
         }
     }
 
@@ -60,19 +67,20 @@ public class APICallServiceImpl implements APICallService {
         if(gitToken == null) return null;
 
         if(gitToken.getProvider().equals(Provider.GITHUB)){
-            return getRepoDetails("Bearer " + gitToken.getTokenValue(), owner, repo, path)
+            return getGHRepoDetails(gitToken, owner, repo, path)
                     .thenApply(details -> details.stream().map(RefinedRepoDetailDTO::new).toList())
                     .join();
         }else{
-            // TODO : 깃랩 API 코드 작성
-            return null;
+            return getGLRepoDetails(gitToken, owner, repo);
         }
-
-
-
     }
 
-    public CompletableFuture<List<DetailResponseDTO>> getRepoDetails(String userToken, String owner, String repo, String path) {
+    private List<RefinedRepoDetailDTO> getGLRepoDetails(GitToken gitToken, String owner, String repo) {
+        return feignGitlabAPIClient.GetRepoDetails(getBearerToken(gitToken), owner, repo).stream()
+                .map(RefinedRepoDetailDTO::new).toList();
+    }
+
+    private CompletableFuture<List<GHDetailResponseDTO>> getGHRepoDetails(GitToken userToken, String owner, String repo, String path) {
 
         // 이미 방문한 경로는 다시 탐색하지 않음
         if (!visitedPaths.add(path)) {
@@ -80,16 +88,16 @@ public class APICallServiceImpl implements APICallService {
         }
 
         // 디렉토리 및 파일 리스트 비동기 호출
-        CompletableFuture<List<DetailResponseDTO>> detailsFuture = CompletableFuture.supplyAsync(() ->
-                feignGithubAPIClient.GetRepoDetails(userToken, owner, repo, path), executorService);
+        CompletableFuture<List<GHDetailResponseDTO>> detailsFuture = CompletableFuture.supplyAsync(() ->
+                feignGithubAPIClient.GetRepoDetails(getBearerToken(userToken), owner, repo, path), executorService);
 
         return detailsFuture.thenCompose(details -> {
-            List<CompletableFuture<List<DetailResponseDTO>>> futures = details.parallelStream()
+            List<CompletableFuture<List<GHDetailResponseDTO>>> futures = details.parallelStream()
                     .filter(this::shouldProcess) // 필요 없는 파일 필터링
                     .map(detail -> {
                         if ("dir".equals(detail.type())) {
                             // 하위 디렉토리 비동기 탐색
-                            return getRepoDetails(userToken, owner, repo, detail.path());
+                            return getGHRepoDetails(userToken, owner, repo, detail.path());
                         } else {
                             return CompletableFuture.completedFuture(List.of(detail)); // 파일은 바로 추가
                         }
@@ -104,12 +112,11 @@ public class APICallServiceImpl implements APICallService {
     }
 
     // 필터링 로직
-    private boolean shouldProcess(DetailResponseDTO detail) {
+    private boolean shouldProcess(GHDetailResponseDTO detail) {
         return !(detail.name().endsWith(".md") || detail.name().endsWith(".jpeg") ||
                 detail.name().endsWith(".jpg") || detail.name().endsWith(".png") ||
                 detail.name().endsWith(".gif"));
     }
-
 
     // Tree Node class with RefinedRepoDetailDTO
     public static class TreeNode {

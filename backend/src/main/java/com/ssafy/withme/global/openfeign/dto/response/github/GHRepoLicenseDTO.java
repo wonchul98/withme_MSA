@@ -1,6 +1,6 @@
-package com.ssafy.withme.global.openfeign.dto.response;
+package com.ssafy.withme.global.openfeign.dto.response.github;
 
-public record RepoLicenseDTO(
+public record GHRepoLicenseDTO(
         String key,
         String name,
         String url,
