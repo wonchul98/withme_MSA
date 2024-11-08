@@ -38,10 +38,6 @@ public class WorkspaceController {
         return workspaceService.getMyInvisibleWorkspaces();
     }
 
-    @GetMapping("/search")
-    public String search() {
-        return "search";
-    }
 
     @GetMapping("/refresh")
     public Map<String, List<WorkspaceInfoResponse>> refresh() {
