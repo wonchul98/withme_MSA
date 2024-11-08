@@ -13,11 +13,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -25,6 +26,8 @@ import java.util.concurrent.CompletableFuture;
 public class APICallServiceImpl implements APICallService {
 
     private final FeignGithubAPIClient feignGithubAPIClient;
+    private final Set<String> visitedPaths = ConcurrentHashMap.newKeySet(); // 중복 요청 방지
+    private final ExecutorService executorService = Executors.newFixedThreadPool(10); // 적절한 스레드 풀 설정
 
     @Override
     public UserResponseDTO GetAuthenticatedUser(GitToken gitToken){
@@ -57,7 +60,7 @@ public class APICallServiceImpl implements APICallService {
         if(gitToken == null) return null;
 
         if(gitToken.getProvider().equals(Provider.GITHUB)){
-            return getRepoDetailsAsync("Bearer " + gitToken.getTokenValue(), owner, repo, path)
+            return getRepoDetails("Bearer " + gitToken.getTokenValue(), owner, repo, path)
                     .thenApply(details -> details.stream().map(RefinedRepoDetailDTO::new).toList())
                     .join();
         }else{
@@ -69,27 +72,44 @@ public class APICallServiceImpl implements APICallService {
 
     }
 
-    @Async
-    protected CompletableFuture<List<DetailResponseDTO>> getRepoDetailsAsync(String userToken, String owner, String repo, String path) {
-        List<DetailResponseDTO> details = feignGithubAPIClient.GetRepoDetails(userToken, owner, repo, path);
-        List<DetailResponseDTO> result = new ArrayList<>();
+    public CompletableFuture<List<DetailResponseDTO>> getRepoDetails(String userToken, String owner, String repo, String path) {
 
-        // 비동기 호출로 "dir" 타입인 경우 다시 재귀적으로 호출
-        for (DetailResponseDTO detail : details) {
-            if ("dir".equals(detail.type())) {
-                result.addAll(getRepoDetailsAsync(userToken, owner, repo, detail.path()).join());
-            }else {
-                // 파일명이 .md 또는 이미지 파일(jpeg, png, gif 등)인 경우 추가하지 않음
-                if (!(detail.name().endsWith(".md") || detail.name().endsWith(".jpeg") ||
-                        detail.name().endsWith(".jpg") || detail.name().endsWith(".png") ||
-                        detail.name().endsWith(".gif"))) {
-                    result.add(detail);
-                }
-            }
+        // 이미 방문한 경로는 다시 탐색하지 않음
+        if (!visitedPaths.add(path)) {
+            return CompletableFuture.completedFuture(Collections.emptyList());
         }
 
-        return CompletableFuture.completedFuture(result);
+        // 디렉토리 및 파일 리스트 비동기 호출
+        CompletableFuture<List<DetailResponseDTO>> detailsFuture = CompletableFuture.supplyAsync(() ->
+                feignGithubAPIClient.GetRepoDetails(userToken, owner, repo, path), executorService);
+
+        return detailsFuture.thenCompose(details -> {
+            List<CompletableFuture<List<DetailResponseDTO>>> futures = details.parallelStream()
+                    .filter(this::shouldProcess) // 필요 없는 파일 필터링
+                    .map(detail -> {
+                        if ("dir".equals(detail.type())) {
+                            // 하위 디렉토리 비동기 탐색
+                            return getRepoDetails(userToken, owner, repo, detail.path());
+                        } else {
+                            return CompletableFuture.completedFuture(List.of(detail)); // 파일은 바로 추가
+                        }
+                    })
+                    .toList();
+
+            return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
+                    .thenApply(v -> futures.stream()
+                            .flatMap(f -> f.join().stream())
+                            .collect(Collectors.toList()));
+        });
     }
+
+    // 필터링 로직
+    private boolean shouldProcess(DetailResponseDTO detail) {
+        return !(detail.name().endsWith(".md") || detail.name().endsWith(".jpeg") ||
+                detail.name().endsWith(".jpg") || detail.name().endsWith(".png") ||
+                detail.name().endsWith(".gif"));
+    }
+
 
     // Tree Node class with RefinedRepoDetailDTO
     public static class TreeNode {

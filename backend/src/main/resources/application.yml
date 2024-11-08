@@ -54,3 +54,10 @@ jwt:
   expires-in:
     access: 14400
     refresh: 2592000 #30일
+
+aws:
+  s3:
+    access-key: ENC(gho4wb8/WRR467pw/SUZ3EkruT7UglLZ3yJEq7iQKoU=)
+    secret-key: ENC(/p8QtvW055po7oRxoyytBZtUjjculks4FMLpl+uzvKROdaitWlwGAxcX79AuL31vIF0/JZcUAUU=)
+    bucket-name: ENC(ixmjY7lqDCCuZ/ZUjfkZmA==)
+    region: ENC(+5zLpwQT7zf14yPybIAXsdeX1E+P9vsa)
