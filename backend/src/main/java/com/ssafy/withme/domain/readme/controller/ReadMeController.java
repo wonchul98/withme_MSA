@@ -35,7 +35,6 @@ public class ReadMeController {
 
     @PostMapping(value = "draft", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<String> makeReadMeDraft(@RequestBody ReadMeDraftRequest readMeDraftRequest) {
-        System.out.println("Received Request: " + readMeDraftRequest);
         try {
             return readMeService.makeReadMeDraft(readMeDraftRequest);
         } catch (Exception e) {

@@ -2,6 +2,8 @@ package com.ssafy.withme.global.openfeign.service;
 
 import com.ssafy.withme.domain.member.dto.GitToken;
 import com.ssafy.withme.domain.member.entity.Provider;
+import com.ssafy.withme.global.exception.BusinessException;
+import com.ssafy.withme.global.exception.ErrorCode;
 import com.ssafy.withme.global.openfeign.FeignGithubAPIClient;
 import com.ssafy.withme.global.openfeign.FeignGitlabAPIClient;
 import com.ssafy.withme.global.openfeign.dto.response.github.GHDetailResponseDTO;
@@ -15,6 +17,9 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -66,17 +71,24 @@ public class APICallServiceImpl implements APICallService {
     public List<RefinedRepoDetailDTO> getRepoDetails(GitToken gitToken, String owner, String repo, String path) {
         if(gitToken == null) return null;
 
-        if(gitToken.getProvider().equals(Provider.GITHUB)){
-            return getGHRepoDetails(gitToken, owner, repo, path)
-                    .thenApply(details -> details.stream().map(RefinedRepoDetailDTO::new).toList())
-                    .join();
-        }else{
-            return getGLRepoDetails(gitToken, owner, repo);
+        try {
+            if(gitToken.getProvider().equals(Provider.GITHUB)){
+                return getGHRepoDetails(gitToken, owner, repo, path)
+                        .thenApply(details -> details.stream().map(RefinedRepoDetailDTO::new).toList())
+                        .join();
+            }else {
+                return getGLRepoDetails(gitToken, owner, repo);
+            }
+        }
+        catch (RuntimeException e) {
+            throw new BusinessException(ErrorCode.REPO_NOT_FOUND);
         }
     }
 
     private List<RefinedRepoDetailDTO> getGLRepoDetails(GitToken gitToken, String owner, String repo) {
-        return feignGitlabAPIClient.GetRepoDetails(getBearerToken(gitToken), owner, repo).stream()
+        String encodedOwner = URLEncoder.encode(owner, StandardCharsets.UTF_8);
+
+        return feignGitlabAPIClient.GetRepoDetails(getBearerToken(gitToken), encodedOwner, repo).stream()
                 .map(RefinedRepoDetailDTO::new).toList();
     }
 
