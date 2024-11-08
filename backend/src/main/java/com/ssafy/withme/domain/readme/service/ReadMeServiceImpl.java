@@ -21,15 +21,13 @@ import com.ssafy.withme.global.openfeign.service.APICallService;
 import com.ssafy.withme.global.openfeign.service.APICallServiceImpl.TreeNode;
 import com.ssafy.withme.global.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
-
+import java.util.Optional;
 
 
 @Service
@@ -75,7 +73,19 @@ public class ReadMeServiceImpl implements ReadMeService {
     @Override
     public Flux<String> makeReadMeDraft(ReadMeDraftRequest readMeDraftRequest) throws JsonProcessingException {
         String message = readMeDraftRequest.userPrompt();
-        String repoTreeStructure = getRepoTree(readMeDraftRequest);
+        Workspace workspace = workspaceRepository.findById(readMeDraftRequest.workspaceId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.WORKSPACE_NOT_FOUND));
+        String repoUrl = workspace.getRepoUrl();
+
+        //parse url
+        String postfix = ".com/";
+        String ownerAndRepo = repoUrl.substring(repoUrl.indexOf(postfix) + postfix.length());
+        int lastIndex = ownerAndRepo.lastIndexOf("/");
+        String owner = ownerAndRepo.substring(0, lastIndex);
+        String repo = ownerAndRepo.substring(lastIndex + 1);
+
+        String repoTreeStructure = getRepoTree(owner, repo);
+
         String prompt = makePrompt(readMeDraftRequest.sectionName(), repoTreeStructure, message);
         ChatGptRequest chatGptRequest = ChatGptRequest.of(prompt);
         String requestValue = objectMapper.writeValueAsString(chatGptRequest);
@@ -109,15 +119,13 @@ public class ReadMeServiceImpl implements ReadMeService {
         """, repoTreeStructure, sectionName, message);
     }
 
-    private String getRepoTree(ReadMeDraftRequest readMeDraftRequest) {
+    private String getRepoTree(String owner, String repo) {
         GitToken userToken = securityUtils.getGitToken();
-        Member currentMember = memberRepository.findById(securityUtils.getMemberId())
-                .orElseThrow(() -> new BusinessException(ErrorCode.MEMBER_NOT_FOUND));
 
         List<RefinedRepoDetailDTO> repoItems = apiCallService.getRepoDetails(
                 userToken,
-                currentMember.getUsername(),
-                readMeDraftRequest.repositoryUrl(),
+                owner,
+                repo,
                 ""
         );
         TreeNode root = apiCallService.buildTree(repoItems);
