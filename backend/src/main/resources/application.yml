@@ -55,7 +55,7 @@ spring:
     base-path: http://localhost:4040
 
 client:
-  base-url: http://localhost:3000
+  base-url: https://www.withme.my
 
 jwt:
   key-string: ENC(s36WwIXzzl9GZ83rGz7AIJgXaQCUuPfe6zBjQdz2x2vsRUcmEiXuNk2yF4JIlr1QBYWGnLAMOSs=)
