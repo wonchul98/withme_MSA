@@ -20,7 +20,7 @@ public record RefinedRepoDetailDTO(
         this(
                 detailResponseDTO.name(),
                 detailResponseDTO.path(),
-                detailResponseDTO.type()
+                "tree".equals(detailResponseDTO.type()) ? "dir" : "file"
         );
     }
 }
