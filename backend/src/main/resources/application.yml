@@ -42,6 +42,11 @@ spring:
             authorization-uri: https://lab.ssafy.com/oauth/authorize
             token-uri: https://lab.ssafy.com/oauth/token
 
+  servlet:
+    multipart:
+      enabled: true
+      max-request-size: 300MB
+      max-file-size: 50MB
 
   webflux:
     base-path: http://localhost:4040
