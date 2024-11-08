@@ -19,7 +19,7 @@ public class ReadMeController {
     private final ReadMeService readMeService;
 
     @PostMapping("")
-    public String saveReadMe(SaveReadMeRequestDTO readMeRequestDTO) {
+    public String saveReadMe(@RequestBody SaveReadMeRequestDTO readMeRequestDTO) {
         return readMeService.saveReadme(readMeRequestDTO);
     }
 
