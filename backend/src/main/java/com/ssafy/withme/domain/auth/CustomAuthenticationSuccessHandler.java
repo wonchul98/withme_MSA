@@ -31,12 +31,13 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         Provider provider = principal.getMember().getProvider();
         AttributeExtractor extractor = AttributeExtractorFactory.getMapper(provider);
 
-        AuthResponse tokenResponse = new AuthResponse();
-        tokenResponse.setAccessToken(jwtUtils.issueToken(principal.getAccessToken(), principal.getMember().getId()));
-        tokenResponse.setImageUrl(extractor.getImageUrl(attributes));
-        tokenResponse.setUserName(extractor.getUsername(attributes));
+        AuthResponse authResponse = new AuthResponse();
+        authResponse.setProvider(provider.toString().toLowerCase());
+        authResponse.setAccessToken(jwtUtils.issueToken(principal.getAccessToken(), principal.getMember().getId()));
+        authResponse.setImageUrl(extractor.getImageUrl(attributes));
+        authResponse.setUserName(extractor.getUsername(attributes));
 
         response.setContentType("application/json");
-        objectMapper.writeValue(response.getWriter(), tokenResponse);
+        objectMapper.writeValue(response.getWriter(), authResponse);
     }
 }

@@ -10,6 +10,8 @@ import lombok.Setter;
 @Setter
 public class AuthResponse {
 
+    private String provider;
+
     @JsonProperty("access_token")
     private String accessToken;
     
