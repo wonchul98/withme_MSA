@@ -50,7 +50,7 @@ pipeline {
                         }
                     }
                     if(frontChanged) {
-                        echo 'build frontend code'
+                        echo 'frontend build will be performed by Docker'
                     }
                 }
             }
@@ -85,10 +85,24 @@ pipeline {
                         }
                     }
                     if(frontChanged) {
-                        dir(FRONT_ROOT) {
-                            script {
-                                sh 'docker build -t taegun1011/withme_frontend .'
+                        withCredentials([string(credentialsId: 'LIVEBLOCKS_SECRET_KEY', variable: 'LB_KEY')]) {
+                            withEnv(["NEXT_PUBLIC_BACKEND_URL=https://k11a507.p.ssafy.io", "NEXT_PUBLIC_BACKEND_URL_D=https://www.withme.my"]) {
+                                dir(FRONT_ROOT) {
+                                    script {
+                                        echo $LB_KEY
+                                        echo $NEXT_PUBLIC_BACKEND_URL
+                                        sh '''
+                                            docker build \
+                                                -t taegun1011/withme_frontend \
+                                                --build-arg LIVEBLOCKS_SECRET_KEY=${LB_KEY} \
+                                                --build-arg NEXT_PUBLIC_BACKEND_URL=${NEXT_PUBLIC_BACKEND_URL} \
+                                                --build-arg NEXT_PUBLIC_BACKEND_URL_D=${NEXT_PUBLIC_BACKEND_URL_D} \
+                                                .
+                                            '''
+                                    }
+                                }
                             }
+                            
                         }
                     }
                 }
