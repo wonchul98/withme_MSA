@@ -206,4 +206,17 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             throw new BusinessException(ErrorCode.IMAGE_UPLOAD_FAILED);
         }
     }
+
+    @Override
+    public String uploadImage(MultipartFile file) {
+        try {
+            InputStream imageStream = file.getInputStream();
+            String imageName = file.getOriginalFilename();
+            InputStream tmp = file.getInputStream();
+            String imgMimeType = tika.detect(tmp);
+            return s3Service.getFileUrl(s3Service.uploadFile(imageStream, imageName, "interImg", imgMimeType));
+        }catch (IOException exception){
+            throw new BusinessException(ErrorCode.IMAGE_UPLOAD_FAILED);
+        }
+    }
 }
