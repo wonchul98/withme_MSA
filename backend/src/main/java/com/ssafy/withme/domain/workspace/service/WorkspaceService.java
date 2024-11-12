@@ -2,6 +2,7 @@ package com.ssafy.withme.domain.workspace.service;
 
 import com.ssafy.withme.domain.workspace.dto.Response.IntegratedWorkspaceResponse;
 import com.ssafy.withme.domain.workspace.dto.Response.WorkspaceInfoResponse;
+import com.ssafy.withme.domain.workspace.dto.Response.WorkspaceSimpleInfoResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,4 +28,6 @@ public interface WorkspaceService {
     String uploadThumbnail(MultipartFile file, String repositoryUrl);
 
     String uploadImage(MultipartFile file);
+
+    WorkspaceSimpleInfoResponse getWorkspaceSimpleInfo(Long aLong);
 }
