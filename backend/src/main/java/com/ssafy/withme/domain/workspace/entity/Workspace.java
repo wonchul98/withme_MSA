@@ -23,6 +23,9 @@ public class Workspace extends BaseTimeEntity {
     @Column(nullable = false)
     private String name;
 
+    @Column
+    private String owner;
+
     @Column(length = 2083)
     private String thumbnail;
 
