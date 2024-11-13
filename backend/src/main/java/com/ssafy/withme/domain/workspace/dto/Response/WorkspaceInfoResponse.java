@@ -30,24 +30,19 @@ public record WorkspaceInfoResponse (
         return WorkspaceInfoResponse.builder()
                 .id(workspace.getId())
                 .name(workspace.getName())
+                .owner(workspace.getOwner())
                 .thumbnail(workspace.getThumbnail())
                 .repoUrl(workspace.getRepoUrl())
                 .isCreated(workspace.getIsCreated())
                 .readmeContent(workspace.getReadmeContent())
                 .isPrivate(workspace.getIsPrivate())
                 .roomId(WORKSPACE_ROOM_ID_PREFIX + workspace.getRoomId())
+                .createdAt(workspace.getCreatedAt())
+                .updatedAt(workspace.getUpdatedAt())
                 .build();
     }
 
     public static WorkspaceInfoResponse from(Repo repo) {
-        return WorkspaceInfoResponse.builder()
-                .id(repo.getWorkspace().getId())
-                .name(repo.getWorkspace().getName())
-                .thumbnail(repo.getWorkspace().getThumbnail())
-                .repoUrl(repo.getWorkspace().getRepoUrl())
-                .isCreated(repo.getWorkspace().getIsCreated())
-                .readmeContent(repo.getWorkspace().getReadmeContent())
-                .isPrivate(repo.getWorkspace().getIsPrivate())
-                .build();
+        return WorkspaceInfoResponse.from(repo.getWorkspace());
     }
 }
