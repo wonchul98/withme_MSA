@@ -35,7 +35,7 @@ public class ReadMeController {
     @GetMapping("/search")
     public List<SearchReadMeResponseDTO> getSearchReadMe(@RequestParam String keyword) {
         if(keyword == null || keyword.isEmpty())
-            return readMeService.listReadme();
+            return readMeService.listReadme(30);
 
         return readMeService.searchReadme(keyword);
     }

@@ -10,5 +10,5 @@ import java.util.List;
 public interface WorkspaceJpaRepository extends JpaRepository<Workspace, Long> {
     Workspace findByRepoUrl(String repoUrl);
 
-    List<Workspace> findByIsCreatedTrueOrderByUpdatedAt();
+    List<Workspace> findByIsCreatedTrueOrderByUpdatedAtDesc();
 }

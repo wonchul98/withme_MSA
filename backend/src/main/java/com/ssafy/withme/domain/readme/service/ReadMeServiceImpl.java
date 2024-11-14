@@ -102,10 +102,10 @@ public class ReadMeServiceImpl implements ReadMeService {
     }
 
     @Override
-    public List<SearchReadMeResponseDTO> listReadme() {
-        return workspaceJpaRepository.findByIsCreatedTrueOrderByUpdatedAt().stream()
+    public List<SearchReadMeResponseDTO> listReadme(Integer size) {
+        return workspaceJpaRepository.findByIsCreatedTrueOrderByUpdatedAtDesc().stream()
                 .map(workspace -> new SearchReadMeResponseDTO(workspace.getId(), workspace.getName(), workspace.getThumbnail()))
-                .toList();
+                .limit(size).toList();
     }
 
     private static String makePrompt(String sectionName, String repoTreeStructure, String message) {
