@@ -101,6 +101,13 @@ public class ReadMeServiceImpl implements ReadMeService {
                 .bodyToFlux(String.class);
     }
 
+    @Override
+    public List<SearchReadMeResponseDTO> listReadme() {
+        return workspaceJpaRepository.findByIsCreatedTrueOrderByUpdatedAt().stream()
+                .map(workspace -> new SearchReadMeResponseDTO(workspace.getId(), workspace.getName(), workspace.getThumbnail()))
+                .toList();
+    }
+
     private static String makePrompt(String sectionName, String repoTreeStructure, String message) {
 
         return String.format("""
