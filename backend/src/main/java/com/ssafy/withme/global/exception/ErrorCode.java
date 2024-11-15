@@ -18,6 +18,9 @@ public enum ErrorCode {
     REPO_NOT_FOUND(BAD_REQUEST, "REPO001", "해당 레파지토리가 존재하지 않습니다."),
     REPO_NOT_ALLOWED(BAD_REQUEST, "REPO002", "해당 레파지토리에 접근할 권한이 없습니다. "),
 
+    /**OpenFeign*/
+    INVALID_REQUEST(BAD_REQUEST, "Open001", "잘못된 API 호출입니다."),
+
     /**WorkSpace*/
     WORKSPACE_NOT_FOUND(BAD_REQUEST,"WORK000", "해당하는 ID의 워크스페이스가 존재하지 않습니다."),
     IMAGE_UPLOAD_FAILED(BAD_REQUEST, "WORK001", "이미지 업로드에 실패했습니다.");

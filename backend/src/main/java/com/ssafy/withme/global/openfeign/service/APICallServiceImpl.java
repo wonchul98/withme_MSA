@@ -214,7 +214,7 @@ public class APICallServiceImpl implements APICallService {
         try {
             return URLEncoder.encode(projectId, StandardCharsets.UTF_8.toString());
         } catch (UnsupportedEncodingException e) {
-            throw new BusinessException(ErrorCode.INVALID_REQUEST, e);
+            throw new BusinessException(ErrorCode.INVALID_REQUEST);
         }
     }
 
