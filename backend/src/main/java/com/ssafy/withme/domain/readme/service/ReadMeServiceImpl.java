@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.ssafy.withme.domain.member.dto.GitToken;
 import com.ssafy.withme.domain.member.repository.MemberRepository;
 import com.ssafy.withme.domain.readme.dto.request.ChatGptRequest;
+import com.ssafy.withme.domain.readme.dto.request.ChatGptRequestMono;
 import com.ssafy.withme.domain.readme.dto.request.ReadMeDraftRequest;
 import com.ssafy.withme.domain.readme.dto.request.SaveReadMeRequestDTO;
 import com.ssafy.withme.domain.readme.dto.response.ChatGptResponse;
@@ -122,6 +123,7 @@ public class ReadMeServiceImpl implements ReadMeService {
 
             workspaceInfo = getWorkspaceInfoFromGPT(repoTreeStructure);
             workspace.changeWorkspaceInfo(workspaceInfo);
+            workspaceJpaRepository.save(workspace);
         }
         else{
             workspaceInfo = workspace.getWorkspaceInfo();
@@ -194,7 +196,7 @@ public class ReadMeServiceImpl implements ReadMeService {
         );
 
         // ChatGPT 요청 생성 (ChatGptRequest.of 사용)
-        ChatGptRequest chatGptRequest = ChatGptRequest.of(prompt);
+        ChatGptRequestMono chatGptRequest = ChatGptRequestMono.of(prompt);
 
         try {
             // WebClient를 통해 ChatGPT API 호출
@@ -220,7 +222,7 @@ public class ReadMeServiceImpl implements ReadMeService {
             ChatGptResponse gptResponse = objectMapper.readValue(response, ChatGptResponse.class);
 
             if (gptResponse != null && !gptResponse.choices().isEmpty()) {
-                return gptResponse.choices().get(0).get("content");
+                return gptResponse.choices().get(0).message().content();
             } else {
                 throw new BusinessException(ErrorCode.GPT_RESPONSE_EMPTY);
             }
