@@ -47,4 +47,90 @@ public class SecurityConfig {
             filterChain.doFilter(request, response); // 다음 필터로 넘김
         }
     }
+
+//    private final CustomAuthenticationSuccessHandler successHandler;
+//    private final CustomOAuth2UserService customUserService;
+//    private final CustomOidcUserService customOidcUserService;
+//
+//    @Bean
+//    @Order(1)
+//    public SecurityFilterChain oauthFilterChain(HttpSecurity http) throws Exception {
+//        http
+//                .securityMatcher("/oauth2/authorization/*", "/login/oauth2/code/*")
+//                .oauth2Login(oauth2Login -> oauth2Login
+//                        .authorizationEndpoint(authorization -> authorization
+//                                .baseUri("/oauth2/authorization")
+//                                .authorizationRequestRepository(authorizationRequestRepository())
+//                        )
+//                        .redirectionEndpoint(redirection -> redirection
+//                                .baseUri("/login/oauth2/code/*"))
+//                        .userInfoEndpoint(userInfo -> userInfo
+//                            .userService(customUserService)
+//                            .oidcUserService(customOidcUserService))
+//                        .successHandler(successHandler)
+//                )
+//
+//                .cors(cors -> cors.configurationSource(corsConfigurationSource()));
+//
+//        return http.build();
+//    }
+//
+//    @Bean
+//    @Order(2)
+//    public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
+//        http
+//                //csrf, httpBasic, formLogin, session은 API 서버에서 불필요
+//                .csrf(CsrfConfigurer::disable)
+//                .httpBasic(HttpBasicConfigurer::disable)
+//                .formLogin(FormLoginConfigurer::disable)
+//                //시큐리티를 적용/미적용할 url 지정. 로그인(토큰 재발급) 할 때만 미적용
+//                .authorizeHttpRequests(authorize -> authorize
+//                        .requestMatchers(HttpMethod.POST, "/oauth2/token", "/api/workspace/simple").permitAll()
+//                        .requestMatchers(HttpMethod.GET, "/api/readme/{workspace_id:[0-9]+}", "/api/readme/search").permitAll()
+//                        .anyRequest().authenticated())
+//                .oauth2ResourceServer(oauth2 -> oauth2
+//                        .jwt(Customizer.withDefaults()))
+//                .cors(cors -> cors.configurationSource(corsConfigurationSource()));
+//
+//        return http.build();
+//    }
+//
+//    //로컬에서 h2 콘솔에 접근할 경우 필요
+//    @Bean
+//    @ConditionalOnProperty(name = "spring.h2.console.enabled",havingValue = "true")
+//    public WebSecurityCustomizer configureH2ConsoleEnable() {
+//        return web -> web.ignoring()
+//                .requestMatchers(PathRequest.toH2Console());
+//    }
+//
+//    @Bean
+//    @Profile("local")
+//    public SecurityFilterChain localSecurityFilterChain(HttpSecurity http) throws Exception {
+//        http
+//                .authorizeHttpRequests(authorize -> authorize
+//                                .anyRequest().permitAll());
+//        return http.build();
+//    }
+//
+//    @Bean
+//    protected CorsConfigurationSource corsConfigurationSource() {
+//
+//        CorsConfiguration corsConfiguration = new CorsConfiguration();
+//        corsConfiguration.setAllowCredentials(true);
+//        corsConfiguration.addAllowedOrigin("http://localhost:3000");
+//        corsConfiguration.addAllowedOrigin("https://www.withme.my");
+//        corsConfiguration.addAllowedOrigin("https://k11a507.p.ssafy.io");
+//        corsConfiguration.addAllowedMethod("*");
+//        corsConfiguration.addAllowedHeader("*");
+//
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", corsConfiguration);
+//
+//        return source;
+//    }
+//
+//    @Bean
+//    protected AuthorizationRequestRepository<OAuth2AuthorizationRequest> authorizationRequestRepository() {
+//        return new CustomOAuth2AuthorizationRequestRepository();
+//    }
 }
