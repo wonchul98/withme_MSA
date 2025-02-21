@@ -13,7 +13,7 @@ public class WebClientConfig {
     @Bean
     public WebClient webClient(
             @Value("${spring.ai.openai.base-url}") String baseUrl,
-            @Value("${spring.ai.openai.api-key}") String apiKey) {
+            @Value("${spring.ai.openai.api-key:default-api-key}") String apiKey) {
         return WebClient.builder()
                 .baseUrl(baseUrl)
                 .defaultHeader("Authorization", "Bearer " + apiKey)
