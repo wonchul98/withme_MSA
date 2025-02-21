@@ -1,9 +1,6 @@
 package com.ssafy.withme.global.config;
 
-import com.ssafy.withme.domain.auth.CustomAuthenticationSuccessHandler;
-import com.ssafy.withme.domain.auth.CustomOAuth2AuthorizationRequestRepository;
-import com.ssafy.withme.domain.auth.CustomOAuth2UserService;
-import com.ssafy.withme.domain.auth.CustomOidcUserService;
+import com.ssafy.withme.domain.auth.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -21,6 +18,7 @@ import org.springframework.security.config.annotation.web.configurers.FormLoginC
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
+import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -35,6 +33,7 @@ public class SecurityConfig {
     private final CustomAuthenticationSuccessHandler successHandler;
     private final CustomOAuth2UserService customUserService;
     private final CustomOidcUserService customOidcUserService;
+    private final CustomUserInfoFilter customUserInfoFilter;
 
     @Bean
     @Order(1)
@@ -74,7 +73,8 @@ public class SecurityConfig {
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(Customizer.withDefaults()))
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()));
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .addFilterAfter(customUserInfoFilter, BearerTokenAuthenticationFilter.class);
 
         return http.build();
     }
