@@ -15,12 +15,6 @@ public class JasyptConfig {
 
     @Bean(name = "jasyptStringEncryptor")
     public StringEncryptor encryptor() {
-        if (password == null || password.isEmpty()) {
-            System.out.println("❌ Jasypt 암호화 비밀번호가 로드되지 않았습니다.");
-        } else {
-            System.out.println("✅ Jasypt 암호화 비밀번호 로드 성공: " + password);
-        }
-
         PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();
         SimpleStringPBEConfig config = new SimpleStringPBEConfig();
         config.setPassword(password);

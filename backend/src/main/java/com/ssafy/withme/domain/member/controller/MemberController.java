@@ -2,8 +2,6 @@ package com.ssafy.withme.domain.member.controller;
 
 import com.ssafy.withme.domain.member.dto.GitToken;
 import com.ssafy.withme.global.util.SecurityUtils;
-import lombok.RequiredArgsConstructor;
-import org.apache.catalina.security.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/member")
-@RequiredArgsConstructor
 public class MemberController {
 
     private static final Logger log = LoggerFactory.getLogger(MemberController.class);
 
-    private final SecurityUtils securityUtils;
+    @Autowired
+    private SecurityUtils securityUtils;
 
     @GetMapping("/info")
     public String info() {
