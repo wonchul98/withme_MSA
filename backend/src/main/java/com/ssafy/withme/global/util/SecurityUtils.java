@@ -7,16 +7,26 @@ import com.ssafy.withme.global.exception.BusinessException;
 import com.ssafy.withme.global.exception.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
-@Component
 @RequiredArgsConstructor
+@Component
 public class SecurityUtils {
 
+
     private final MemberRepository memberRepository;
-    private final HttpServletRequest request;
 
     public Long getMemberId() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String userId = request.getHeader("X-User-Id");
 
         if (userId == null || userId.isEmpty()) {
@@ -27,17 +37,15 @@ public class SecurityUtils {
     }
 
     public GitToken getGitToken() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String userId = request.getHeader("X-User-Id");
-        String token = request.getHeader("X-User-Token");  // 인증 서버에서 추가한 헤더
+        String token = request.getHeader("X-User-Token");
 
         if (userId == null || token == null) {
             throw new BusinessException(ErrorCode.INVALID_ID_TOKEN);
         }
 
-        Long memberId = Long.valueOf(userId);
-
-        // 🔍 DB에서 Member 조회
-        Member member = memberRepository.findById(memberId)
+        Member member = memberRepository.findById(Long.valueOf(userId))
                 .orElseThrow(() -> new BusinessException(ErrorCode.INVALID_ID_TOKEN));
 
         return new GitToken(member.getProvider(), token);

@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
@@ -103,14 +104,14 @@ public class SecurityConfig {
 //                .requestMatchers(PathRequest.toH2Console());
 //    }
 //
-//    @Bean
-//    @Profile("local")
-//    public SecurityFilterChain localSecurityFilterChain(HttpSecurity http) throws Exception {
-//        http
-//                .authorizeHttpRequests(authorize -> authorize
-//                                .anyRequest().permitAll());
-//        return http.build();
-//    }
+    @Bean
+    @Profile("local")
+    public SecurityFilterChain localSecurityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests(authorize -> authorize
+                                .anyRequest().permitAll());
+        return http.build();
+    }
 //
 //    @Bean
 //    protected CorsConfigurationSource corsConfigurationSource() {
